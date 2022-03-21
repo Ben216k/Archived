@@ -6,10 +6,12 @@
 //
 
 import VeliaUI
+import Files
 
 struct ARSetupController: View {
     @Binding var groups: ARGroups
     @Binding var needsSetup: Bool
+    var onDone: () -> ()
     @State var page = 0
     var body: some View {
         Group {
@@ -18,7 +20,22 @@ struct ARSetupController: View {
                 ARSetupWelcomeView(p: $page)
                     .transition(.moveAway)
             case 1:
-                ARCreateGroupView()
+                ARCreateGroupView {
+                    groups = [$0]
+                    do {
+                        indexFile = try Folder(path: "~/Archived").createFileIfNeeded(at: "Index.json")
+                        try indexFile!.write(try groups.jsonData())
+                        needsSetup = false
+                        onDone()
+                    } catch {
+                        presentAlert(m: "Failed to Create Archive Group", i: "\(error.localizedDescription)")
+                    }
+                    page = 1
+                } onBack: {
+                    withAnimation {
+                        page = 0
+                    }
+                }
                     .transition(.moveAway)
             default:
                 Text("Uh oh!")
@@ -60,3 +77,5 @@ An archive group is all the versions of that specific thing.
 
 So let's get started with your first archive, shell we?
 """
+
+var indexFile = nil as File?

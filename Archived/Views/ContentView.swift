@@ -10,51 +10,97 @@ import Files
 
 struct ContentView: View {
     @State var groups = [] as ARGroups
+    @State var processedGroups = [] as [ARCategory]
     @State var needsSetup = false
+    @State var creatingGroup = false
     var body: some View {
         NavigationView {
-            List {
-//                NavigationLink(destination: Text("Not a Bug!")) {
-//                    Label {
-//                        Text("Patched Sur")
-//                    } icon: {
-//                        Image(systemName: "circle")
-//                    }
-//                }
-            }.listStyle(SidebarListStyle())
+            VStack(spacing: 0) {
+                List {
+                    ForEach(processedGroups, id: \.title) { group in
+    //                    Text(group.title)
+    //                        .font(.system(size: 12, weight: .semibold, design: .default))
+                        Section {
+                            ForEach(group.groups, id: \.self) { groupID in
+                                NavigationLink(destination: ARGroupView(group: .init(get: { groups[groupID] }, set: { groups[groupID] = $0 }))) {
+                                    Text(self.groups[groupID].title)
+                                }
+                            }
+                        } header: {
+                            Text(group.title)
+                        }
+                    }
+                }.listStyle(SidebarListStyle())
+                Button("Create Group") {
+                    creatingGroup = true
+                }.padding(10)
+                .sheet(isPresented: $creatingGroup) {
+                    ARShimCreateGroup(groups: $groups, creatingGroup: $creatingGroup, onDone: { processGroups() })
+                }
+                .toolbar {
+                    ToolbarItem(placement: .navigation) {
+                        Button(action: toggleSidebar, label: {
+                            Image(systemName: "sidebar.left")
+                        })
+                    }
+                }
+            }
             Text("Welcome to Archived!")
                 .padding()
                 .navigationTitle("Archived")
                 .toolbar {
-                    ToolbarItem {
-                        Label {
-                            Text("Patched Sur")
-                        } icon: {
-                            Image(systemName: "circle")
-                        }
-                    }
+//                    ToolbarItem(placement: .navigation) {
+//                        Button(action: toggleSidebar, label: {
+//                            Image(systemName: "sidebar.left")
+//                        })
+//                    }
                 }
                 .sheet(isPresented: $needsSetup) {
-                    ARSetupController(groups: $groups, needsSetup: $needsSetup)
+                    ARSetupController(groups: $groups, needsSetup: $needsSetup, onDone: { processGroups() })
                 }
                 .onAppear {
-                    print("Hello World")
-                    print("Attempting to read from ~/Archived/Index.json")
-                    do {
-                        let rawJSON = try call("cat ~/Archived/Index.json")
-                        print("Found data!")
-                        groups = try ARGroups(rawJSON)
-                        print("Decoded data!")
-                    } catch _ as ShellOutError {
-                        print("Failed to find/read Index.json.")
-                        print("Creating Archived folder")
-                        _ = try? call("mkdir ~/Archived")
-                        print("Starting Setup!")
-                        needsSetup = true
-                    } catch {
-                        print("Failed to decode Index.json.")
+                    if processedGroups.isEmpty {
+                        print("Hello World")
+                        print("Attempting to read from ~/Archived/Index.json")
+                        do {
+                            let rawJSON = try call("cat ~/Archived/Index.json")
+                            print("Found data!")
+                            groups = try ARGroups(rawJSON)
+                            print("Decoded data!")
+                        } catch _ as ShellOutError {
+                            print("Failed to find/read Index.json.")
+                            print("Creating Archived folder")
+                            _ = try? call("mkdir ~/Archived")
+                            print("Starting Setup!")
+                            needsSetup = true
+                        } catch {
+                            print("Failed to decode Index.json.")
+                        }
+                        processGroups()
                     }
                 }
+        }
+    }
+    
+    func processGroups() {
+        var preprocess = [:] as [String: ARCategory]
+        var onValue = -1
+        groups.forEach { group in
+            onValue += 1
+            if preprocess[group.category] != nil {
+                preprocess[group.category]?.groups.append(onValue)
+            } else {
+                preprocess[group.category] = .init(title: group.category, groups: [onValue])
+            }
+        }
+        self.processedGroups = []
+        let preproccess2 = preprocess.keys.sorted()
+        preproccess2.forEach { key in
+            var cat = preprocess[key]!
+            cat.groups = cat.groups.sorted { first, second in
+                return [groups[first].title, groups[second].title].sorted()[0] == groups[first].title
+            }
+            self.processedGroups.append(cat)
         }
     }
 }

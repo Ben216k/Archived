@@ -27,3 +27,11 @@ extension AnyTransition {
 extension Color {
     static let background = Self(NSColor.textBackgroundColor)
 }
+
+func presentAlert(m: String, i: String, s: NSAlert.Style = .critical) {
+    let errorAlert = NSAlert()
+    errorAlert.alertStyle = s
+    errorAlert.informativeText = i
+    errorAlert.messageText = m
+    errorAlert.runModal()
+}

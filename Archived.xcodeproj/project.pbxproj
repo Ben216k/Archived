@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		762562A527E7ED6100B80522 /* ARGroupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 762562A427E7ED6100B80522 /* ARGroupView.swift */; };
 		764E3B122648CDC900DA540E /* ARGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 764E3B112648CDC900DA540E /* ARGroup.swift */; };
 		764E3B152648D5DF00DA540E /* Files in Frameworks */ = {isa = PBXBuildFile; productRef = 764E3B142648D5DF00DA540E /* Files */; };
 		76697564263635FD005B97A7 /* ArchivedApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76697563263635FD005B97A7 /* ArchivedApp.swift */; };
@@ -14,12 +15,15 @@
 		76697568263635FE005B97A7 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 76697567263635FE005B97A7 /* Assets.xcassets */; };
 		7669756B263635FE005B97A7 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7669756A263635FE005B97A7 /* Preview Assets.xcassets */; };
 		7669757D26364415005B97A7 /* ShellOut.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7669757C26364415005B97A7 /* ShellOut.swift */; };
+		76916DCB27E7EEBD000CB6DE /* ARShimCreateGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76916DCA27E7EEBD000CB6DE /* ARShimCreateGroup.swift */; };
 		76BC2CA12648DAD900A5AAF5 /* ARSetupController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76BC2CA02648DAD900A5AAF5 /* ARSetupController.swift */; };
-		76BC2CA42648E06C00A5AAF5 /* VeliaUI in Frameworks */ = {isa = PBXBuildFile; productRef = 76BC2CA32648E06C00A5AAF5 /* VeliaUI */; };
 		76BC2CA62648E23D00A5AAF5 /* ARCreateGroupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76BC2CA52648E23D00A5AAF5 /* ARCreateGroupView.swift */; };
+		76E26E4927E7DE3800095C3C /* VeliaUI in Frameworks */ = {isa = PBXBuildFile; productRef = 76E26E4827E7DE3800095C3C /* VeliaUI */; };
+		76E26E4C27E7E16600095C3C /* ARCategories.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76E26E4B27E7E16600095C3C /* ARCategories.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		762562A427E7ED6100B80522 /* ARGroupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ARGroupView.swift; sourceTree = "<group>"; };
 		764E3B112648CDC900DA540E /* ARGroup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ARGroup.swift; sourceTree = "<group>"; };
 		76697560263635FD005B97A7 /* Archived.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Archived.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		76697563263635FD005B97A7 /* ArchivedApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArchivedApp.swift; sourceTree = "<group>"; };
@@ -29,8 +33,10 @@
 		7669756C263635FE005B97A7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		7669756D263635FE005B97A7 /* Archived.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Archived.entitlements; sourceTree = "<group>"; };
 		7669757C26364415005B97A7 /* ShellOut.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShellOut.swift; sourceTree = "<group>"; };
+		76916DCA27E7EEBD000CB6DE /* ARShimCreateGroup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ARShimCreateGroup.swift; sourceTree = "<group>"; };
 		76BC2CA02648DAD900A5AAF5 /* ARSetupController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ARSetupController.swift; sourceTree = "<group>"; };
 		76BC2CA52648E23D00A5AAF5 /* ARCreateGroupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ARCreateGroupView.swift; sourceTree = "<group>"; };
+		76E26E4B27E7E16600095C3C /* ARCategories.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ARCategories.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -38,7 +44,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				76BC2CA42648E06C00A5AAF5 /* VeliaUI in Frameworks */,
+				76E26E4927E7DE3800095C3C /* VeliaUI in Frameworks */,
 				764E3B152648D5DF00DA540E /* Files in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -67,6 +73,7 @@
 			children = (
 				76BC2C9F2648DAB500A5AAF5 /* CoreCode */,
 				76BC2C9E2648DA9A00A5AAF5 /* Views */,
+				76E26E4A27E7E14E00095C3C /* Data */,
 				76697567263635FE005B97A7 /* Assets.xcassets */,
 				7669756C263635FE005B97A7 /* Info.plist */,
 				7669756D263635FE005B97A7 /* Archived.entitlements */,
@@ -89,6 +96,8 @@
 				76697565263635FD005B97A7 /* ContentView.swift */,
 				76BC2CA02648DAD900A5AAF5 /* ARSetupController.swift */,
 				76BC2CA52648E23D00A5AAF5 /* ARCreateGroupView.swift */,
+				76916DCA27E7EEBD000CB6DE /* ARShimCreateGroup.swift */,
+				762562A427E7ED6100B80522 /* ARGroupView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -98,9 +107,17 @@
 			children = (
 				76697563263635FD005B97A7 /* ArchivedApp.swift */,
 				7669757C26364415005B97A7 /* ShellOut.swift */,
-				764E3B112648CDC900DA540E /* ARGroup.swift */,
 			);
 			path = CoreCode;
+			sourceTree = "<group>";
+		};
+		76E26E4A27E7E14E00095C3C /* Data */ = {
+			isa = PBXGroup;
+			children = (
+				76E26E4B27E7E16600095C3C /* ARCategories.swift */,
+				764E3B112648CDC900DA540E /* ARGroup.swift */,
+			);
+			path = Data;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -121,7 +138,7 @@
 			name = Archived;
 			packageProductDependencies = (
 				764E3B142648D5DF00DA540E /* Files */,
-				76BC2CA32648E06C00A5AAF5 /* VeliaUI */,
+				76E26E4827E7DE3800095C3C /* VeliaUI */,
 			);
 			productName = Archived;
 			productReference = 76697560263635FD005B97A7 /* Archived.app */;
@@ -134,7 +151,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 1240;
-				LastUpgradeCheck = 1240;
+				LastUpgradeCheck = 1250;
 				TargetAttributes = {
 					7669755F263635FD005B97A7 = {
 						CreatedOnToolsVersion = 12.4;
@@ -152,7 +169,7 @@
 			mainGroup = 76697557263635FD005B97A7;
 			packageReferences = (
 				764E3B132648D5DF00DA540E /* XCRemoteSwiftPackageReference "Files" */,
-				76BC2CA22648E06C00A5AAF5 /* XCRemoteSwiftPackageReference "VeliaUI" */,
+				76E26E4727E7DE3800095C3C /* XCRemoteSwiftPackageReference "VeliaUI" */,
 			);
 			productRefGroup = 76697561263635FD005B97A7 /* Products */;
 			projectDirPath = "";
@@ -180,12 +197,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				76E26E4C27E7E16600095C3C /* ARCategories.swift in Sources */,
 				764E3B122648CDC900DA540E /* ARGroup.swift in Sources */,
 				76697566263635FD005B97A7 /* ContentView.swift in Sources */,
+				76916DCB27E7EEBD000CB6DE /* ARShimCreateGroup.swift in Sources */,
 				7669757D26364415005B97A7 /* ShellOut.swift in Sources */,
 				76BC2CA62648E23D00A5AAF5 /* ARCreateGroupView.swift in Sources */,
 				76697564263635FD005B97A7 /* ArchivedApp.swift in Sources */,
 				76BC2CA12648DAD900A5AAF5 /* ARSetupController.swift in Sources */,
+				762562A527E7ED6100B80522 /* ARGroupView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -313,6 +333,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = Archived/Archived.entitlements;
+				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"Archived/Preview Content\"";
@@ -337,6 +358,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = Archived/Archived.entitlements;
+				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"Archived/Preview Content\"";
@@ -387,9 +409,9 @@
 				minimumVersion = 4.2.0;
 			};
 		};
-		76BC2CA22648E06C00A5AAF5 /* XCRemoteSwiftPackageReference "VeliaUI" */ = {
+		76E26E4727E7DE3800095C3C /* XCRemoteSwiftPackageReference "VeliaUI" */ = {
 			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/BenSova/VeliaUI";
+			repositoryURL = "https://github.com/Ben216k/VeliaUI";
 			requirement = {
 				branch = main;
 				kind = branch;
@@ -403,9 +425,9 @@
 			package = 764E3B132648D5DF00DA540E /* XCRemoteSwiftPackageReference "Files" */;
 			productName = Files;
 		};
-		76BC2CA32648E06C00A5AAF5 /* VeliaUI */ = {
+		76E26E4827E7DE3800095C3C /* VeliaUI */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 76BC2CA22648E06C00A5AAF5 /* XCRemoteSwiftPackageReference "VeliaUI" */;
+			package = 76E26E4727E7DE3800095C3C /* XCRemoteSwiftPackageReference "VeliaUI" */;
 			productName = VeliaUI;
 		};
 /* End XCSwiftPackageProductDependency section */

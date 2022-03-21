@@ -6,17 +6,18 @@
 import Foundation
 
 // MARK: - ARGroup
-struct ARGroup: Codable {
-    var uuid, title, type, catagory: String
+struct ARGroup: Codable, Identifiable {
+    var uuid, title, category: String
     var appArchives: [ARAppArchive]
 
     enum CodingKeys: String, CodingKey {
         case uuid = "UUID"
         case title = "Title"
-        case type = "Type"
-        case catagory = "Catagory"
+        case category = "Category"
         case appArchives = "AppArchives"
     }
+    
+    var id: String { uuid }
 }
 
 // MARK: ARGroup convenience initializers and mutators
@@ -40,15 +41,13 @@ extension ARGroup {
     func with(
         uuid: String? = nil,
         title: String? = nil,
-        type: String? = nil,
-        catagory: String? = nil,
+        category: String? = nil,
         appArchives: [ARAppArchive]? = nil
     ) -> ARGroup {
         return ARGroup(
             uuid: uuid ?? self.uuid,
             title: title ?? self.title,
-            type: type ?? self.type,
-            catagory: catagory ?? self.catagory,
+            category: category ?? self.category,
             appArchives: appArchives ?? self.appArchives
         )
     }
