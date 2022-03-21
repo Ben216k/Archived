@@ -46,6 +46,4 @@ struct ARCategory {
      }
  ]
 
-
-
  */
