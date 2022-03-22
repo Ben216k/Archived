@@ -16,6 +16,7 @@
 		7669756B263635FE005B97A7 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7669756A263635FE005B97A7 /* Preview Assets.xcassets */; };
 		7669757D26364415005B97A7 /* ShellOut.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7669757C26364415005B97A7 /* ShellOut.swift */; };
 		76916DCB27E7EEBD000CB6DE /* ARShimCreateGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76916DCA27E7EEBD000CB6DE /* ARShimCreateGroup.swift */; };
+		76916DCD27E80A51000CB6DE /* ARNewArchiveView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76916DCC27E80A51000CB6DE /* ARNewArchiveView.swift */; };
 		76BC2CA12648DAD900A5AAF5 /* ARSetupController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76BC2CA02648DAD900A5AAF5 /* ARSetupController.swift */; };
 		76BC2CA62648E23D00A5AAF5 /* ARCreateGroupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76BC2CA52648E23D00A5AAF5 /* ARCreateGroupView.swift */; };
 		76E26E4927E7DE3800095C3C /* VeliaUI in Frameworks */ = {isa = PBXBuildFile; productRef = 76E26E4827E7DE3800095C3C /* VeliaUI */; };
@@ -34,6 +35,7 @@
 		7669756D263635FE005B97A7 /* Archived.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Archived.entitlements; sourceTree = "<group>"; };
 		7669757C26364415005B97A7 /* ShellOut.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShellOut.swift; sourceTree = "<group>"; };
 		76916DCA27E7EEBD000CB6DE /* ARShimCreateGroup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ARShimCreateGroup.swift; sourceTree = "<group>"; };
+		76916DCC27E80A51000CB6DE /* ARNewArchiveView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ARNewArchiveView.swift; sourceTree = "<group>"; };
 		76BC2CA02648DAD900A5AAF5 /* ARSetupController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ARSetupController.swift; sourceTree = "<group>"; };
 		76BC2CA52648E23D00A5AAF5 /* ARCreateGroupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ARCreateGroupView.swift; sourceTree = "<group>"; };
 		76E26E4B27E7E16600095C3C /* ARCategories.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ARCategories.swift; sourceTree = "<group>"; };
@@ -98,6 +100,7 @@
 				76BC2CA52648E23D00A5AAF5 /* ARCreateGroupView.swift */,
 				76916DCA27E7EEBD000CB6DE /* ARShimCreateGroup.swift */,
 				762562A427E7ED6100B80522 /* ARGroupView.swift */,
+				76916DCC27E80A51000CB6DE /* ARNewArchiveView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -202,6 +205,7 @@
 				76697566263635FD005B97A7 /* ContentView.swift in Sources */,
 				76916DCB27E7EEBD000CB6DE /* ARShimCreateGroup.swift in Sources */,
 				7669757D26364415005B97A7 /* ShellOut.swift in Sources */,
+				76916DCD27E80A51000CB6DE /* ARNewArchiveView.swift in Sources */,
 				76BC2CA62648E23D00A5AAF5 /* ARCreateGroupView.swift in Sources */,
 				76697564263635FD005B97A7 /* ArchivedApp.swift in Sources */,
 				76BC2CA12648DAD900A5AAF5 /* ARSetupController.swift in Sources */,
@@ -346,6 +350,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 11.0;
+				MARKETING_VERSION = v0.0.1;
 				PRODUCT_BUNDLE_IDENTIFIER = bensova.Archived;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
@@ -371,6 +376,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 11.0;
+				MARKETING_VERSION = v0.0.1;
 				PRODUCT_BUNDLE_IDENTIFIER = bensova.Archived;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;

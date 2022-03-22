@@ -22,7 +22,15 @@ struct ContentView: View {
     //                        .font(.system(size: 12, weight: .semibold, design: .default))
                         Section {
                             ForEach(group.groups, id: \.self) { groupID in
-                                NavigationLink(destination: ARGroupView(group: .init(get: { groups[groupID] }, set: { groups[groupID] = $0 }))) {
+                                NavigationLink(destination: ARGroupView(group: .init(get: { groups[groupID] }, set: {
+                                    groups[groupID] = $0
+                                    do {
+                                        indexFile = try Folder(path: "~/Archived").createFileIfNeeded(at: "Index.json")
+                                        try indexFile!.write(try groups.jsonData())
+                                    } catch {
+                                        presentAlert(m: "Failed to Update Archive", i: "\(error.localizedDescription)")
+                                    }
+                                }))) {
                                     Text(self.groups[groupID].title)
                                 }
                             }

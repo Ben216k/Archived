@@ -63,21 +63,18 @@ extension ARGroup {
 
 // MARK: - ARAppArchive
 struct ARAppArchive: Codable {
-    var uuid, title, version, build: String
-    var releaseType: String
+    var uuid, title, releaseType: String
     var date: Date
     var notes: String
-    var tags: [String]
+    var files: [String]
 
     enum CodingKeys: String, CodingKey {
         case uuid = "UUID"
         case title = "Title"
-        case version = "Version"
-        case build = "Build"
         case releaseType = "ReleaseType"
         case date = "Date"
         case notes = "Notes"
-        case tags = "Tags"
+        case files = "Files"
     }
 }
 
@@ -102,22 +99,18 @@ extension ARAppArchive {
     func with(
         uuid: String? = nil,
         title: String? = nil,
-        version: String? = nil,
-        build: String? = nil,
         releaseType: String? = nil,
         date: Date? = nil,
         notes: String? = nil,
-        tags: [String]? = nil
+        files: [String]? = nil
     ) -> ARAppArchive {
         return ARAppArchive(
             uuid: uuid ?? self.uuid,
             title: title ?? self.title,
-            version: version ?? self.version,
-            build: build ?? self.build,
             releaseType: releaseType ?? self.releaseType,
             date: date ?? self.date,
             notes: notes ?? self.notes,
-            tags: tags ?? self.tags
+            files: files ?? self.files
         )
     }
 
