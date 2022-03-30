@@ -6,6 +6,7 @@
 //
 
 import VeliaUI
+import SwiftUI
 
 struct ARCreateGroupView: View {
     @State var name = ""
@@ -13,6 +14,7 @@ struct ARCreateGroupView: View {
     @State var hovered: String?
     @State var titleEmpty = false
     @State var categoryEmpty = false
+    @Binding var processedGroups: [ARCategory]
     let onDone: (ARGroup) -> ()
     let onBack: () -> ()
     var body: some View {
@@ -35,6 +37,20 @@ struct ARCreateGroupView: View {
                 VITextField(text: $category, s: Image(systemName: "rectangle.3.offgrid")) {
                     Text("Category")
                         .opacity(0.5)
+                }
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack {
+                        ForEach(processedGroups, id: \.title) { category in
+                            VIButton(id: category.title, h: .init(get: { category.title == self.category ? category.title : hovered }, set: { newValue in
+                                hovered = newValue
+                            })) {
+                                Text(category.title)
+                            } onClick: {
+                                self.category = category.title
+                            }.inPad()
+
+                        }
+                    }
                 }
                 (Text(categoryEmpty ? "Please enter a category.\n" : "").foregroundColor(.red) + Text("If you have multiple archive groups that fall under the same category, you can write that category name here. All groups that are in the same category will show up together in the sidebar. This category could be something like macOS versions or Ben's Apps."))
                     .font(.caption)

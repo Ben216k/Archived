@@ -66,7 +66,7 @@ struct ContentView: View {
                     creatingGroup = true
                 }.padding(10)
                 .sheet(isPresented: $creatingGroup) {
-                    ARShimCreateGroup(groups: $groups, creatingGroup: $creatingGroup, onDone: { processGroups() })
+                    ARShimCreateGroup(groups: $groups, creatingGroup: $creatingGroup, processedGroups: $processedGroups, onDone: { processGroups() })
                 }
                 .toolbar {
                     ToolbarItem(placement: .navigation) {
@@ -91,7 +91,7 @@ struct ContentView: View {
                     }
                 }
                 .sheet(isPresented: $needsSetup) {
-                    ARSetupController(groups: $groups, needsSetup: $needsSetup, onDone: { processGroups() })
+                    ARSetupController(groups: $groups, needsSetup: $needsSetup, processedGroups: $processedGroups, onDone: { processGroups() })
                 }
                 .onAppear {
                     if processedGroups.isEmpty {

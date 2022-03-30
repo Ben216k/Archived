@@ -20,18 +20,54 @@ struct ARGroupView: View {
     @State var promptUpdateGroup = false
     var onDelete: () throws -> ()
     var processGroups: () -> ()
+    @State var sortMode = "By Date"
+    @State var searchTerm = ""
     var body: some View {
         ScrollView {
+            HStack {
+                VITextField(text: $searchTerm, s: Image(systemName: "magnifyingglass")) {
+                    Text("Search Group")
+                }
+                Spacer()
+                ZStack {
+                    Rectangle()
+                        .foregroundColor(.init("Accent"))
+                        .cornerRadius(20)
+                        .opacity(hovered == "SortButton" ? 1 : 0.1)
+                    Menu {
+                        Button("By Date") {
+                            sortMode = "By Date"
+                        }
+                        Button("Alphabetically") {
+                            sortMode = "Alphabetically"
+                        }
+                    } label: {
+                        Text("Sort \(sortMode)")
+                            .foregroundColor(hovered == "SortButton" ? .white : .init("Accent"))
+                    }.menuStyle(BorderlessButtonMenuStyle())
+                        .foregroundColor(hovered == "SortButton" ? .white : .init("Accent"))
+                        .fixedSize()
+                        .padding(.horizontal, 7.5)
+                            .padding(7.5)
+                }.fixedSize()
+                    .onHover { nowHovered in
+                        withAnimation { hovered = nowHovered ? "SortButton" : nil }
+                    }
+            }.padding([.top, .horizontal], 7.5)
             VStack(alignment: .leading, spacing: 10) {
                 ForEach(group.appArchives.indices.filter({ archiveIndice in
                     if filterSelection.hasPrefix("TYPE-") {
                         var filterBy = filterSelection
                         filterBy.removeFirst(5)
-                        return group.appArchives[archiveIndice].releaseType.hasPrefix(filterBy)
+                        return group.appArchives[archiveIndice].releaseType == filterBy
                     }
                     return true
                 }).sorted(by: { first, second in
-                    group.appArchives[first].date > group.appArchives[second].date
+                    if sortMode == "Alphabetically" {
+                        let map =  group.appArchives.map(\.title).sorted()
+                        return map.firstIndex(of: group.appArchives[first].title)! < map.firstIndex(of: group.appArchives[second].title)!
+                    }
+                    return group.appArchives[first].date > group.appArchives[second].date
                 }), id: \.self) { archiveIndice in
                     
                     if let archive = group.appArchives[archiveIndice] {
@@ -43,20 +79,22 @@ struct ARGroupView: View {
                             VStack(alignment: .leading) {
                                 ARArchiveItemButton(expandedAt: $expandedAt, archiveIndice: archiveIndice, archive: archive, filterSelection: $filterSelection)
                                 if expandedAt == archiveIndice {
-                                    VStack(alignment: .leading) {
-                                        HStack {
-                                            Text("Notes")
-                                                .font(.body.bold())
-                                                .padding(.bottom, -3)
-                                            Spacer()
-                                        }
-                                        ScrollView {
-                                            Text(archive.notes)
-                                        }
-                                        .frame(maxHeight: 200).fixedSize(horizontal: false, vertical: true)
-                                    }.padding(.horizontal, 7.5)
-                                        .padding(7.5).background(Color("Accent").opacity(0.1))
-                                        .cornerRadius(15)
+                                    if !archive.notes.isEmpty {
+                                        VStack(alignment: .leading) {
+                                            HStack {
+                                                Text("Notes")
+                                                    .font(.body.bold())
+                                                    .padding(.bottom, -3)
+                                                Spacer()
+                                            }
+                                            ScrollView {
+                                                Text(archive.notes)
+                                            }
+                                            .frame(maxHeight: 200).fixedSize(horizontal: false, vertical: true)
+                                        }.padding(.horizontal, 7.5)
+                                            .padding(7.5).background(Color("Accent").opacity(0.1))
+                                            .cornerRadius(15)
+                                    }
                                     ForEach(archive.files, id: \.self) { file in
                                         HStack {
                                             Text(file)
@@ -105,7 +143,16 @@ struct ARGroupView: View {
                                 .padding(.bottom, expandedAt == archiveIndice ? 5 : 0)
                         }.fixedSize(horizontal: false, vertical: true)
                     }
-                }.sheet(isPresented: $promptUpdateGroup) {
+                }
+                HStack {
+                    Spacer()
+                    Text("\(group.appArchives.count) Archive\(group.appArchives.count == 1 ? "" : "s")")
+                    Spacer()
+                }
+            }.padding([.bottom, .horizontal], 7.5)
+            Rectangle()
+                .frame(height: 0)
+                .sheet(isPresented: $promptUpdateGroup) {
                     AREditGroupView(__group: $group, group: group, onBack: {
                         promptUpdateGroup = false
                     }, onDone: {
@@ -113,9 +160,6 @@ struct ARGroupView: View {
                         processGroups()
                     })
                 }
-            }.padding(7.5)
-            Rectangle()
-                .frame(height: 0)
                 .alert(isPresented: $promptGroupDelete) {
                     Alert(title: Text("Delete Archive Group?"), message: Text("This archive group (including all archives and files in it) will be permanetly deleted and will not be recovable."), primaryButton: .destructive(Text("Delete"), action: {
                         do {

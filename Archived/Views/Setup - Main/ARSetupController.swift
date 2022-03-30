@@ -11,6 +11,7 @@ import Files
 struct ARSetupController: View {
     @Binding var groups: ARGroups
     @Binding var needsSetup: Bool
+    @Binding var processedGroups: [ARCategory]
     var onDone: () -> ()
     @State var page = 0
     var body: some View {
@@ -20,7 +21,7 @@ struct ARSetupController: View {
                 ARSetupWelcomeView(p: $page)
                     .transition(.moveAway)
             case 1:
-                ARCreateGroupView {
+                ARCreateGroupView(processedGroups: $processedGroups) {
                     groups = [$0]
                     do {
                         indexFile = try Folder(path: "~/Archived").createFileIfNeeded(at: "Index.json")
