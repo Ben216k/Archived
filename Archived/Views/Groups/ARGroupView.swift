@@ -23,6 +23,7 @@ struct ARGroupView: View {
     var processGroups: () -> ()
     @State var sortMode = "By Date"
     @State var searchTerm = ""
+    @State var editingArchive = false
     var body: some View {
         ScrollView {
             HStack {
@@ -143,8 +144,11 @@ struct ARGroupView: View {
                                                 .font(.system(size: 15))
                                             Text("Edit Archive")
                                         } onClick: {
-                                            
+                                            editingArchive = true
                                         }.inPad()
+                                            .sheet(isPresented: $editingArchive) {
+                                                AREditArchiveView(newArchive: $editingArchive, archive: archive, ogArchive: archive, group: $group, indexOfArchive: archiveIndice)
+                                            }
                                         VIButton(id: "DELETE", h: $hovered) {
                                             Image(systemName: "trash")
                                                 .font(.system(size: 15))
@@ -152,17 +156,18 @@ struct ARGroupView: View {
                                         } onClick: {
                                             promptDelete = true
                                         }.btColor(.red).inPad()
-                                    }.alert(isPresented: $promptDelete) {
-                                        Alert(title: Text("Delete Archive?"), message: Text("This archive (and all archived files) will be permanetly deleted and will not be recovable. (This archive group will not be deleted.)"), primaryButton: .destructive(Text("Delete"), action: {
-                                            do {
-                                                let archiveFolder = try Folder(path: "/Users/\(NSUserName())/Archived/\(group.title)/\(archive.title)")
-                                                try archiveFolder.delete()
-                                                group.appArchives.remove(at: archiveIndice)
-                                                expandedAt = -1
-                                            } catch {
-                                                presentAlert(m: "Unable to Remove Archive", i: error.localizedDescription)
-                                            }
-                                        }), secondaryButton: .cancel())
+                                        .alert(isPresented: $promptDelete) {
+                                            Alert(title: Text("Delete Archive?"), message: Text("This archive (and all archived files) will be permanently deleted and will not be recoverable. (This archive group will not be deleted.)"), primaryButton: .destructive(Text("Delete"), action: {
+                                                do {
+                                                    let archiveFolder = try Folder(path: "/Users/\(NSUserName())/Archived/\(group.title)/\(archive.title)")
+                                                    try archiveFolder.delete()
+                                                    group.appArchives.remove(at: archiveIndice)
+                                                    expandedAt = -1
+                                                } catch {
+                                                    presentAlert(m: "Unable to Remove Archive", i: error.localizedDescription)
+                                                }
+                                            }), secondaryButton: .cancel())
+                                        }
                                     }
                                 }
                             }.padding(.horizontal, 7.5)
@@ -188,7 +193,7 @@ struct ARGroupView: View {
                     })
                 }
                 .alert(isPresented: $promptGroupDelete) {
-                    Alert(title: Text("Delete Archive Group?"), message: Text("This archive group (including all archives and files in it) will be permanetly deleted and will not be recovable."), primaryButton: .destructive(Text("Delete"), action: {
+                    Alert(title: Text("Delete Archive Group?"), message: Text("This archive group (including all archives and files in it) will be permanently deleted and will not be recoverable."), primaryButton: .destructive(Text("Delete"), action: {
                         do {
                             let archiveFolder = try? Folder(path: "/Users/\(NSUserName())/Archived/\(group.title)/")
                             _ = try? archiveFolder?.delete()

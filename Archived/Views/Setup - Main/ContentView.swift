@@ -14,7 +14,6 @@ struct ContentView: View {
     @State var needsSetup = false
     @State var creatingGroup = false
     @State var activeGroup = ""
-    @State var activeGroupBackup = nil as String?
     var body: some View {
         NavigationView {
             VStack(spacing: 0) {
@@ -84,12 +83,6 @@ struct ContentView: View {
             Text("Welcome to Archived!")
                 .padding()
                 .navigationTitle("Archived")
-                .onAppear {
-                    if let activeGroupBackup = activeGroupBackup {
-                        activeGroup = activeGroupBackup
-                        self.activeGroupBackup = nil
-                    }
-                }
                 .sheet(isPresented: $needsSetup) {
                     ARSetupController(groups: $groups, needsSetup: $needsSetup, processedGroups: $processedGroups, onDone: { processGroups() })
                 }
@@ -118,7 +111,6 @@ struct ContentView: View {
     }
     
     func processGroups() {
-        activeGroupBackup = activeGroup
         var preprocess = [:] as [String: ARCategory]
         var onValue = -1
         groups.forEach { group in

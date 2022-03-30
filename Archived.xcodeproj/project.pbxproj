@@ -18,6 +18,7 @@
 		76916DCB27E7EEBD000CB6DE /* ARShimCreateGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76916DCA27E7EEBD000CB6DE /* ARShimCreateGroup.swift */; };
 		76916DCD27E80A51000CB6DE /* ARNewArchiveView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76916DCC27E80A51000CB6DE /* ARNewArchiveView.swift */; };
 		76952A4127F3DBFE00B4A8FD /* AREditGroupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76952A4027F3DBFE00B4A8FD /* AREditGroupView.swift */; };
+		76952A4427F407B600B4A8FD /* AREditArchiveView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76952A4327F407B600B4A8FD /* AREditArchiveView.swift */; };
 		76BC2CA12648DAD900A5AAF5 /* ARSetupController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76BC2CA02648DAD900A5AAF5 /* ARSetupController.swift */; };
 		76BC2CA62648E23D00A5AAF5 /* ARCreateGroupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76BC2CA52648E23D00A5AAF5 /* ARCreateGroupView.swift */; };
 		76E26E4927E7DE3800095C3C /* VeliaUI in Frameworks */ = {isa = PBXBuildFile; productRef = 76E26E4827E7DE3800095C3C /* VeliaUI */; };
@@ -39,6 +40,7 @@
 		76916DCC27E80A51000CB6DE /* ARNewArchiveView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ARNewArchiveView.swift; sourceTree = "<group>"; };
 		76952A4027F3DBFE00B4A8FD /* AREditGroupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AREditGroupView.swift; sourceTree = "<group>"; };
 		76952A4227F3EF7900B4A8FD /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		76952A4327F407B600B4A8FD /* AREditArchiveView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AREditArchiveView.swift; sourceTree = "<group>"; };
 		76BC2CA02648DAD900A5AAF5 /* ARSetupController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ARSetupController.swift; sourceTree = "<group>"; };
 		76BC2CA52648E23D00A5AAF5 /* ARCreateGroupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ARCreateGroupView.swift; sourceTree = "<group>"; };
 		76E26E4B27E7E16600095C3C /* ARCategories.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ARCategories.swift; sourceTree = "<group>"; };
@@ -140,6 +142,7 @@
 			children = (
 				762562A427E7ED6100B80522 /* ARGroupView.swift */,
 				76916DCC27E80A51000CB6DE /* ARNewArchiveView.swift */,
+				76952A4327F407B600B4A8FD /* AREditArchiveView.swift */,
 			);
 			path = Groups;
 			sourceTree = "<group>";
@@ -221,6 +224,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				76952A4427F407B600B4A8FD /* AREditArchiveView.swift in Sources */,
 				76E26E4C27E7E16600095C3C /* ARCategories.swift in Sources */,
 				764E3B122648CDC900DA540E /* ARGroup.swift in Sources */,
 				76697566263635FD005B97A7 /* ContentView.swift in Sources */,
