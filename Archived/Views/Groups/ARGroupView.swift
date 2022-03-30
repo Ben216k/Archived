@@ -56,6 +56,9 @@ struct ARGroupView: View {
             }.padding([.top, .horizontal], 7.5)
             VStack(alignment: .leading, spacing: 10) {
                 ForEach(group.appArchives.indices.filter({ archiveIndice in
+                    if !searchTerm.isEmpty && !group.appArchives[archiveIndice].title.lowercased().contains(searchTerm.lowercased()) {
+                        return false
+                    }
                     if filterSelection.hasPrefix("TYPE-") {
                         var filterBy = filterSelection
                         filterBy.removeFirst(5)
@@ -63,6 +66,13 @@ struct ARGroupView: View {
                     }
                     return true
                 }).sorted(by: { first, second in
+                    if !searchTerm.isEmpty {
+                        if group.appArchives[first].title.lowercased().hasPrefix(searchTerm.lowercased()) && !group.appArchives[second].title.lowercased().hasPrefix(searchTerm.lowercased()) {
+                            return true
+                        } else if !group.appArchives[first].title.lowercased().hasPrefix(searchTerm.lowercased()) && group.appArchives[second].title.lowercased().hasPrefix(searchTerm.lowercased()) {
+                            return false
+                        }
+                    }
                     if sortMode == "Alphabetically" {
                         let map =  group.appArchives.map(\.title).sorted()
                         return map.firstIndex(of: group.appArchives[first].title)! < map.firstIndex(of: group.appArchives[second].title)!
