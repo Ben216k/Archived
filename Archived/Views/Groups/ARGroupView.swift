@@ -8,6 +8,7 @@
 import VeliaUI
 import SwiftUI
 import Files
+import AVFoundation
 
 struct ARGroupView: View {
     @Binding var group: ARGroup
@@ -107,7 +108,17 @@ struct ARGroupView: View {
                                     }
                                     ForEach(archive.files, id: \.self) { file in
                                         HStack {
-                                            Text(file)
+                                            if let metadata = obtainCoolMetadata(g: group.title, a: archive.title, f: file) {
+                                                HStack(alignment: .bottom) {
+                                                    VStack(alignment: .leading) {
+                                                        Text(metadata.title)
+                                                            .bold()
+                                                        Text("\(metadata.author) - \(file)")
+                                                    }
+                                                }
+                                            } else {
+                                                Text(file)
+                                            }
                                             Spacer()
                                             Button {
                                                 NSWorkspace.shared.activateFileViewerSelecting([URL(fileURLWithPath: "/Users/\(NSUserName())/Archived/\(group.title)/\(archive.title)/\(file)")])
@@ -125,8 +136,14 @@ struct ARGroupView: View {
                                                 .font(.system(size: 15))
                                             Text("Reveal in Finder")
                                         } onClick: {
-                                            print("~/Archived/\(group.title)/\(archive.title)")
                                             NSWorkspace.shared.selectFile(nil, inFileViewerRootedAtPath: "/Users/\(NSUserName())/Archived/\(group.title)/\(archive.title)")
+                                        }.inPad()
+                                        VIButton(id: "EDITARCHIVE", h: $hovered) {
+                                            Image(systemName: "square.and.pencil")
+                                                .font(.system(size: 15))
+                                            Text("Edit Archive")
+                                        } onClick: {
+                                            
                                         }.inPad()
                                         VIButton(id: "DELETE", h: $hovered) {
                                             Image(systemName: "trash")
@@ -201,9 +218,9 @@ struct ARGroupView: View {
                         Image(systemName: "trash")
                     }
                 }
-                Rectangle()
-                    .frame(width: 20, height: 1)
-                    .opacity(0.00001)
+//                Rectangle()
+//                    .frame(width: 20, height: 1)
+//                    .opacity(0.00001)
                 Button {
                     newArchive = true
                 } label: {
@@ -211,15 +228,6 @@ struct ARGroupView: View {
                         Text("New Archive")
                     } icon: {
                         Image(systemName: "plus")
-                    }
-                }
-                Button {
-                    newArchive = true
-                } label: {
-                    Label {
-                        Text("App Settings")
-                    } icon: {
-                        Image(systemName: "gearshape")
                     }
                 }
             }
@@ -304,4 +312,22 @@ struct ContentVi2ew_Previews: PreviewProvider {
     static var previews: some View {
         ContentView()
     }
+}
+
+func obtainCoolMetadata(g group: String, a archive: String, f file: String) -> (title: String, author: String)? {
+    let asset = AVAsset(url: URL(fileURLWithPath: "/Users/\(NSUserName())/Archived/\(group)/\(archive)/\(file)"))
+    let metadata = asset.commonMetadata
+    var returnable = (title: "", author: "")
+    metadata.forEach { data in
+        if data.key == nil { return }
+        if "\(data.key!)" == "TT2" {
+            returnable.title = data.stringValue ?? ""
+        } else if "\(data.key!)" == "TP1" {
+            returnable.author = data.stringValue ?? ""
+        }
+    }
+    if returnable.title.isEmpty || returnable.author.isEmpty {
+        return nil
+    }
+    return returnable
 }

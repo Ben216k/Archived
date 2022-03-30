@@ -38,6 +38,7 @@
 		76916DCA27E7EEBD000CB6DE /* ARShimCreateGroup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ARShimCreateGroup.swift; sourceTree = "<group>"; };
 		76916DCC27E80A51000CB6DE /* ARNewArchiveView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ARNewArchiveView.swift; sourceTree = "<group>"; };
 		76952A4027F3DBFE00B4A8FD /* AREditGroupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AREditGroupView.swift; sourceTree = "<group>"; };
+		76952A4227F3EF7900B4A8FD /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		76BC2CA02648DAD900A5AAF5 /* ARSetupController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ARSetupController.swift; sourceTree = "<group>"; };
 		76BC2CA52648E23D00A5AAF5 /* ARCreateGroupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ARCreateGroupView.swift; sourceTree = "<group>"; };
 		76E26E4B27E7E16600095C3C /* ARCategories.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ARCategories.swift; sourceTree = "<group>"; };
@@ -59,6 +60,7 @@
 		76697557263635FD005B97A7 = {
 			isa = PBXGroup;
 			children = (
+				76952A4227F3EF7900B4A8FD /* README.md */,
 				76697562263635FD005B97A7 /* Archived */,
 				76697561263635FD005B97A7 /* Products */,
 			);

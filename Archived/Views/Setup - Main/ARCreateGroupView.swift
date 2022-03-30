@@ -7,6 +7,7 @@
 
 import VeliaUI
 import SwiftUI
+import AVFoundation
 
 struct ARCreateGroupView: View {
     @State var name = ""
