@@ -17,7 +17,9 @@ struct ARGroupView: View {
     @State var promptDelete = false
     @State var filterSelection = ""
     @State var promptGroupDelete = false
+    @State var promptUpdateGroup = false
     var onDelete: () throws -> ()
+    var processGroups: () -> ()
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 10) {
@@ -85,18 +87,17 @@ struct ARGroupView: View {
                                         } onClick: {
                                             promptDelete = true
                                         }.btColor(.red).inPad()
-                                            .alert(isPresented: $promptDelete) {
-                                                Alert(title: Text("Delete Archive?"), message: Text("This archive (and all archived files) will be permanetly deleted and will not be recovable. (This archive group will not be deleted.)"), primaryButton: .destructive(Text("Delete"), action: {
-                                                    do {
-                                                        let archiveFolder = try Folder(path: "/Users/\(NSUserName())/Archived/\(group.title)/\(archive.title)")
-                                                        try archiveFolder.delete()
-                                                        group.appArchives.remove(at: archiveIndice)
-                                                        expandedAt = -1
-                                                    } catch {
-                                                        presentAlert(m: "Unable to Remove Archive", i: error.localizedDescription)
-                                                    }
-                                                }), secondaryButton: .cancel())
+                                    }.alert(isPresented: $promptDelete) {
+                                        Alert(title: Text("Delete Archive?"), message: Text("This archive (and all archived files) will be permanetly deleted and will not be recovable. (This archive group will not be deleted.)"), primaryButton: .destructive(Text("Delete"), action: {
+                                            do {
+                                                let archiveFolder = try Folder(path: "/Users/\(NSUserName())/Archived/\(group.title)/\(archive.title)")
+                                                try archiveFolder.delete()
+                                                group.appArchives.remove(at: archiveIndice)
+                                                expandedAt = -1
+                                            } catch {
+                                                presentAlert(m: "Unable to Remove Archive", i: error.localizedDescription)
                                             }
+                                        }), secondaryButton: .cancel())
                                     }
                                 }
                             }.padding(.horizontal, 7.5)
@@ -104,8 +105,17 @@ struct ARGroupView: View {
                                 .padding(.bottom, expandedAt == archiveIndice ? 5 : 0)
                         }.fixedSize(horizontal: false, vertical: true)
                     }
+                }.sheet(isPresented: $promptUpdateGroup) {
+                    AREditGroupView(__group: $group, group: group, onBack: {
+                        promptUpdateGroup = false
+                    }, onDone: {
+                        promptUpdateGroup = false
+                        processGroups()
+                    })
                 }
             }.padding(7.5)
+            Rectangle()
+                .frame(height: 0)
                 .alert(isPresented: $promptGroupDelete) {
                     Alert(title: Text("Delete Archive Group?"), message: Text("This archive group (including all archives and files in it) will be permanetly deleted and will not be recovable."), primaryButton: .destructive(Text("Delete"), action: {
                         do {
@@ -120,7 +130,7 @@ struct ARGroupView: View {
         }.toolbar() {
             ToolbarItemGroup {
                 Button {
-                    newArchive = true
+                    promptUpdateGroup = true
                 } label: {
                     Label {
                         Text("Edit Group")

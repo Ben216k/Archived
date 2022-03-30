@@ -14,6 +14,7 @@ struct ContentView: View {
     @State var needsSetup = false
     @State var creatingGroup = false
     @State var activeGroup = ""
+    @State var activeGroupBackup = nil as String?
     var body: some View {
         NavigationView {
             VStack(spacing: 0) {
@@ -43,7 +44,7 @@ struct ContentView: View {
                                             presentAlert(m: "Failed to Remove Archive Group", i: "\(error.localizedDescription)")
                                             creatingGroup = false
                                         }
-                                    }), isActive: .init(get: {
+                                    }, processGroups: { processGroups() }), isActive: .init(get: {
                                         activeGroup == "\(groupID)"
                                     }, set: { newValue in
                                         if newValue {
@@ -83,12 +84,11 @@ struct ContentView: View {
             Text("Welcome to Archived!")
                 .padding()
                 .navigationTitle("Archived")
-                .toolbar {
-//                    ToolbarItem(placement: .navigation) {
-//                        Button(action: toggleSidebar, label: {
-//                            Image(systemName: "sidebar.left")
-//                        })
-//                    }
+                .onAppear {
+                    if let activeGroupBackup = activeGroupBackup {
+                        activeGroup = activeGroupBackup
+                        self.activeGroupBackup = nil
+                    }
                 }
                 .sheet(isPresented: $needsSetup) {
                     ARSetupController(groups: $groups, needsSetup: $needsSetup, onDone: { processGroups() })
@@ -118,6 +118,7 @@ struct ContentView: View {
     }
     
     func processGroups() {
+        activeGroupBackup = activeGroup
         var preprocess = [:] as [String: ARCategory]
         var onValue = -1
         groups.forEach { group in
