@@ -95,12 +95,8 @@
 		76BC2C9E2648DA9A00A5AAF5 /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				76697565263635FD005B97A7 /* ContentView.swift */,
-				76BC2CA02648DAD900A5AAF5 /* ARSetupController.swift */,
-				76BC2CA52648E23D00A5AAF5 /* ARCreateGroupView.swift */,
-				76916DCA27E7EEBD000CB6DE /* ARShimCreateGroup.swift */,
-				762562A427E7ED6100B80522 /* ARGroupView.swift */,
-				76916DCC27E80A51000CB6DE /* ARNewArchiveView.swift */,
+				76F21DB827EA9F9F009F5B9B /* Setup - Main */,
+				76F21DB927EA9FBA009F5B9B /* Groups */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -121,6 +117,26 @@
 				764E3B112648CDC900DA540E /* ARGroup.swift */,
 			);
 			path = Data;
+			sourceTree = "<group>";
+		};
+		76F21DB827EA9F9F009F5B9B /* Setup - Main */ = {
+			isa = PBXGroup;
+			children = (
+				76697565263635FD005B97A7 /* ContentView.swift */,
+				76BC2CA02648DAD900A5AAF5 /* ARSetupController.swift */,
+				76BC2CA52648E23D00A5AAF5 /* ARCreateGroupView.swift */,
+				76916DCA27E7EEBD000CB6DE /* ARShimCreateGroup.swift */,
+			);
+			path = "Setup - Main";
+			sourceTree = "<group>";
+		};
+		76F21DB927EA9FBA009F5B9B /* Groups */ = {
+			isa = PBXGroup;
+			children = (
+				762562A427E7ED6100B80522 /* ARGroupView.swift */,
+				76916DCC27E80A51000CB6DE /* ARNewArchiveView.swift */,
+			);
+			path = Groups;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

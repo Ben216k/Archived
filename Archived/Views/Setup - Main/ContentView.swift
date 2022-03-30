@@ -13,6 +13,7 @@ struct ContentView: View {
     @State var processedGroups = [] as [ARCategory]
     @State var needsSetup = false
     @State var creatingGroup = false
+    @State var activeGroup = ""
     var body: some View {
         NavigationView {
             VStack(spacing: 0) {
@@ -22,16 +23,37 @@ struct ContentView: View {
     //                        .font(.system(size: 12, weight: .semibold, design: .default))
                         Section {
                             ForEach(group.groups, id: \.self) { groupID in
-                                NavigationLink(destination: ARGroupView(group: .init(get: { groups[groupID] }, set: {
-                                    groups[groupID] = $0
-                                    do {
-                                        indexFile = try Folder(path: "~/Archived").createFileIfNeeded(at: "Index.json")
-                                        try indexFile!.write(try groups.jsonData())
-                                    } catch {
-                                        presentAlert(m: "Failed to Update Archive", i: "\(error.localizedDescription)")
+                                if groups.count > groupID {
+                                    NavigationLink(destination: ARGroupView(group: .init(get: { groups[groupID] }, set: {
+                                        groups[groupID] = $0
+                                        do {
+                                            indexFile = try Folder(path: "~/Archived").createFileIfNeeded(at: "Index.json")
+                                            try indexFile!.write(try groups.jsonData())
+                                        } catch {
+                                            presentAlert(m: "Failed to Update Archive", i: "\(error.localizedDescription)")
+                                        }
+                                    }), onDelete: {
+                                        do {
+                                            indexFile = try Folder(path: "~/Archived").createFileIfNeeded(at: "Index.json")
+                                            groups.remove(at: groupID)
+                                            try indexFile!.write(try groups.jsonData())
+                                            activeGroup = ""
+                                            processGroups()
+                                        } catch {
+                                            presentAlert(m: "Failed to Remove Archive Group", i: "\(error.localizedDescription)")
+                                            creatingGroup = false
+                                        }
+                                    }), isActive: .init(get: {
+                                        activeGroup == "\(groupID)"
+                                    }, set: { newValue in
+                                        if newValue {
+                                            activeGroup = "\(groupID)"
+                                        } else if activeGroup == "\(groupID)" {
+                                            activeGroup = ""
+                                        }
+                                    })) {
+                                        Text(self.groups[groupID].title)
                                     }
-                                }))) {
-                                    Text(self.groups[groupID].title)
                                 }
                             }
                         } header: {
@@ -48,9 +70,14 @@ struct ContentView: View {
                 .toolbar {
                     ToolbarItem(placement: .navigation) {
                         Button(action: toggleSidebar, label: {
-                            Image(systemName: "sidebar.left")
+                            Label {
+                                Text("Toggle Sidebar")
+                            } icon: {
+                                Image(systemName: "sidebar.left")
+                            }
                         })
                     }
+                    
                 }
             }
             Text("Welcome to Archived!")

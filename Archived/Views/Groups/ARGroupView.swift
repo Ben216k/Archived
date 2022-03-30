@@ -16,6 +16,8 @@ struct ARGroupView: View {
     @State var hovered: String?
     @State var promptDelete = false
     @State var filterSelection = ""
+    @State var promptGroupDelete = false
+    var onDelete: () throws -> ()
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 10) {
@@ -102,11 +104,42 @@ struct ARGroupView: View {
                                 .padding(.bottom, expandedAt == archiveIndice ? 5 : 0)
                         }.fixedSize(horizontal: false, vertical: true)
                     }
-                    
                 }
             }.padding(7.5)
+                .alert(isPresented: $promptGroupDelete) {
+                    Alert(title: Text("Delete Archive Group?"), message: Text("This archive group (including all archives and files in it) will be permanetly deleted and will not be recovable."), primaryButton: .destructive(Text("Delete"), action: {
+                        do {
+                            let archiveFolder = try? Folder(path: "/Users/\(NSUserName())/Archived/\(group.title)/")
+                            _ = try? archiveFolder?.delete()
+                            try onDelete()
+                        } catch {
+                            presentAlert(m: "Unable to Delete Archive Group", i: error.localizedDescription)
+                        }
+                    }), secondaryButton: .cancel())
+                }
         }.toolbar() {
-            ToolbarItem {
+            ToolbarItemGroup {
+                Button {
+                    newArchive = true
+                } label: {
+                    Label {
+                        Text("Edit Group")
+                    } icon: {
+                        Image(systemName: "square.and.pencil")
+                    }
+                }
+                Button {
+                    promptGroupDelete = true
+                } label: {
+                    Label {
+                        Text("Delete Group")
+                    } icon: {
+                        Image(systemName: "trash")
+                    }
+                }
+                Rectangle()
+                    .frame(width: 20, height: 1)
+                    .opacity(0.00001)
                 Button {
                     newArchive = true
                 } label: {
@@ -114,6 +147,15 @@ struct ARGroupView: View {
                         Text("New Archive")
                     } icon: {
                         Image(systemName: "plus")
+                    }
+                }
+                Button {
+                    newArchive = true
+                } label: {
+                    Label {
+                        Text("App Settings")
+                    } icon: {
+                        Image(systemName: "gearshape")
                     }
                 }
             }
