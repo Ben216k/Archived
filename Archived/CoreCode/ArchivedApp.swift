@@ -14,10 +14,6 @@ struct ArchivedApp: App {
             ContentView()
                 .frame(minWidth: 700, idealWidth: 700, maxWidth: .infinity, minHeight: 300, idealHeight: 300, maxHeight: .infinity, alignment: .center)
         }
-        Settings {
-            Text("Hello World")
-                .frame(minWidth: 500, idealWidth: 500, maxWidth: .infinity, minHeight: 300, idealHeight: 300, maxHeight: .infinity, alignment: .center)
-        }
     }
 }
 

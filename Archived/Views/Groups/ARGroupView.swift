@@ -24,63 +24,13 @@ struct ARGroupView: View {
     @State var sortMode = "By Date"
     @State var searchTerm = ""
     @State var editingArchive = false
+    @Binding var archiveSource: String
+    
     var body: some View {
         ScrollView {
-            HStack {
-                VITextField(text: $searchTerm, s: Image(systemName: "magnifyingglass")) {
-                    Text("Search Group")
-                }
-                Spacer()
-                ZStack {
-                    Rectangle()
-                        .foregroundColor(.init("Accent"))
-                        .cornerRadius(20)
-                        .opacity(hovered == "SortButton" ? 1 : 0.1)
-                    Menu {
-                        Button("By Date") {
-                            sortMode = "By Date"
-                        }
-                        Button("Alphabetically") {
-                            sortMode = "Alphabetically"
-                        }
-                    } label: {
-                        Text("Sort \(sortMode)")
-                            .foregroundColor(hovered == "SortButton" ? .white : .init("Accent"))
-                    }.menuStyle(BorderlessButtonMenuStyle())
-                        .foregroundColor(hovered == "SortButton" ? .white : .init("Accent"))
-                        .fixedSize()
-                        .padding(.horizontal, 7.5)
-                            .padding(7.5)
-                }.fixedSize()
-                    .onHover { nowHovered in
-                        withAnimation { hovered = nowHovered ? "SortButton" : nil }
-                    }
-            }.padding([.top, .horizontal], 7.5)
+            ARTopGroupView(searchTerm: $searchTerm, hovered: $hovered, sortMode: $sortMode)
             VStack(alignment: .leading, spacing: 10) {
-                ForEach(group.appArchives.indices.filter({ archiveIndice in
-                    if !searchTerm.isEmpty && !group.appArchives[archiveIndice].title.lowercased().contains(searchTerm.lowercased()) {
-                        return false
-                    }
-                    if filterSelection.hasPrefix("TYPE-") {
-                        var filterBy = filterSelection
-                        filterBy.removeFirst(5)
-                        return group.appArchives[archiveIndice].releaseType == filterBy
-                    }
-                    return true
-                }).sorted(by: { first, second in
-                    if !searchTerm.isEmpty {
-                        if group.appArchives[first].title.lowercased().hasPrefix(searchTerm.lowercased()) && !group.appArchives[second].title.lowercased().hasPrefix(searchTerm.lowercased()) {
-                            return true
-                        } else if !group.appArchives[first].title.lowercased().hasPrefix(searchTerm.lowercased()) && group.appArchives[second].title.lowercased().hasPrefix(searchTerm.lowercased()) {
-                            return false
-                        }
-                    }
-                    if sortMode == "Alphabetically" {
-                        let map =  group.appArchives.map(\.title).sorted()
-                        return map.firstIndex(of: group.appArchives[first].title)! < map.firstIndex(of: group.appArchives[second].title)!
-                    }
-                    return group.appArchives[first].date > group.appArchives[second].date
-                }), id: \.self) { archiveIndice in
+                ForEach(excessiveFiltering(group.appArchives), id: \.self) { archiveIndice in
                     
                     if let archive = group.appArchives[archiveIndice] {
                         ZStack(alignment: .leading) {
@@ -109,7 +59,7 @@ struct ARGroupView: View {
                                     }
                                     ForEach(archive.files, id: \.self) { file in
                                         HStack {
-                                            if let metadata = obtainCoolMetadata(g: group.title, a: archive.title, f: file) {
+                                            if let metadata = obtainCoolMetadata(g: group.title, a: archive.title, f: file, s: archiveSource) {
                                                 HStack(alignment: .bottom) {
                                                     VStack(alignment: .leading) {
                                                         Text(metadata.title)
@@ -122,7 +72,7 @@ struct ARGroupView: View {
                                             }
                                             Spacer()
                                             Button {
-                                                NSWorkspace.shared.activateFileViewerSelecting([URL(fileURLWithPath: "/Users/\(NSUserName())/Archived/\(group.title)/\(archive.title)/\(file)")])
+                                                NSWorkspace.shared.activateFileViewerSelecting([URL(fileURLWithPath: "\(archiveSource)/\(group.title)/\(archive.title)/\(file)")])
                                             } label: {
                                                 Image(systemName: "doc.text.magnifyingglass")
                                                     .font(.system(size: 15))
@@ -137,7 +87,7 @@ struct ARGroupView: View {
                                                 .font(.system(size: 15))
                                             Text("Reveal in Finder")
                                         } onClick: {
-                                            NSWorkspace.shared.selectFile(nil, inFileViewerRootedAtPath: "/Users/\(NSUserName())/Archived/\(group.title)/\(archive.title)")
+                                            NSWorkspace.shared.selectFile(nil, inFileViewerRootedAtPath: "\(archiveSource)/\(group.title)/\(archive.title)")
                                         }.inPad()
                                         VIButton(id: "EDITARCHIVE", h: $hovered) {
                                             Image(systemName: "square.and.pencil")
@@ -147,7 +97,7 @@ struct ARGroupView: View {
                                             editingArchive = true
                                         }.inPad()
                                             .sheet(isPresented: $editingArchive) {
-                                                AREditArchiveView(newArchive: $editingArchive, archive: archive, ogArchive: archive, group: $group, indexOfArchive: archiveIndice)
+                                                AREditArchiveView(newArchive: $editingArchive, archive: archive, ogArchive: archive, group: $group, archiveSource: $archiveSource, indexOfArchive: archiveIndice)
                                             }
                                         VIButton(id: "DELETE", h: $hovered) {
                                             Image(systemName: "trash")
@@ -159,7 +109,7 @@ struct ARGroupView: View {
                                         .alert(isPresented: $promptDelete) {
                                             Alert(title: Text("Delete Archive?"), message: Text("This archive (and all archived files) will be permanently deleted and will not be recoverable. (This archive group will not be deleted.)"), primaryButton: .destructive(Text("Delete"), action: {
                                                 do {
-                                                    let archiveFolder = try Folder(path: "/Users/\(NSUserName())/Archived/\(group.title)/\(archive.title)")
+                                                    let archiveFolder = try Folder(path: "\(archiveSource)/\(group.title)/\(archive.title)")
                                                     try archiveFolder.delete()
                                                     group.appArchives.remove(at: archiveIndice)
                                                     expandedAt = -1
@@ -185,7 +135,7 @@ struct ARGroupView: View {
             Rectangle()
                 .frame(height: 0)
                 .sheet(isPresented: $promptUpdateGroup) {
-                    AREditGroupView(__group: $group, group: group, onBack: {
+                    AREditGroupView(__group: $group, group: group, archiveSource: $archiveSource, onBack: {
                         promptUpdateGroup = false
                     }, onDone: {
                         promptUpdateGroup = false
@@ -195,7 +145,7 @@ struct ARGroupView: View {
                 .alert(isPresented: $promptGroupDelete) {
                     Alert(title: Text("Delete Archive Group?"), message: Text("This archive group (including all archives and files in it) will be permanently deleted and will not be recoverable."), primaryButton: .destructive(Text("Delete"), action: {
                         do {
-                            let archiveFolder = try? Folder(path: "/Users/\(NSUserName())/Archived/\(group.title)/")
+                            let archiveFolder = try? Folder(path: "\(archiveSource)/\(group.title)/")
                             _ = try? archiveFolder?.delete()
                             try onDelete()
                         } catch {
@@ -205,42 +155,75 @@ struct ARGroupView: View {
                 }
         }.toolbar() {
             ToolbarItemGroup {
-                Button {
-                    promptUpdateGroup = true
-                } label: {
-                    Label {
-                        Text("Edit Group")
-                    } icon: {
-                        Image(systemName: "square.and.pencil")
-                    }
-                }
-                Button {
-                    promptGroupDelete = true
-                } label: {
-                    Label {
-                        Text("Delete Group")
-                    } icon: {
-                        Image(systemName: "trash")
-                    }
-                }
-//                Rectangle()
-//                    .frame(width: 20, height: 1)
-//                    .opacity(0.00001)
-                Button {
-                    newArchive = true
-                } label: {
-                    Label {
-                        Text("New Archive")
-                    } icon: {
-                        Image(systemName: "plus")
-                    }
-                }
+                ARToolbarGroupView(promptUpdateGroup: $promptUpdateGroup, promptGroupDelete: $promptGroupDelete, newArchive: $newArchive)
             }
         }.navigationTitle(Text(group.title))
             .navigationSubtitle(Text(group.category))
             .sheet(isPresented: $newArchive) {
-                ARNewArchiveView(newArchive: $newArchive, group: $group)
+                ARNewArchiveView(newArchive: $newArchive, group: $group, archiveSource: $archiveSource)
             }
+    }
+    
+    func excessiveFiltering(_ array: [ARAppArchive]) -> Array<Int> {
+        array.indices.filter({ archiveIndice in
+            if !searchTerm.isEmpty && !group.appArchives[archiveIndice].title.lowercased().contains(searchTerm.lowercased()) {
+                return false
+            }
+            if filterSelection.hasPrefix("TYPE-") {
+                var filterBy = filterSelection
+                filterBy.removeFirst(5)
+                return group.appArchives[archiveIndice].releaseType == filterBy
+            }
+            return true
+        }).sorted(by: { first, second in
+            if !searchTerm.isEmpty {
+                if group.appArchives[first].title.lowercased().hasPrefix(searchTerm.lowercased()) && !group.appArchives[second].title.lowercased().hasPrefix(searchTerm.lowercased()) {
+                    return true
+                } else if !group.appArchives[first].title.lowercased().hasPrefix(searchTerm.lowercased()) && group.appArchives[second].title.lowercased().hasPrefix(searchTerm.lowercased()) {
+                    return false
+                }
+            }
+            if sortMode == "Alphabetically" {
+                let map =  group.appArchives.map(\.title).sorted()
+                return map.firstIndex(of: group.appArchives[first].title)! < map.firstIndex(of: group.appArchives[second].title)!
+            }
+            return group.appArchives[first].date > group.appArchives[second].date
+        })
+    }
+}
+
+struct ARToolbarGroupView: View {
+    @Binding var promptUpdateGroup: Bool
+    @Binding var promptGroupDelete: Bool
+    @Binding var newArchive: Bool
+    var body: some View {
+        Button {
+            promptUpdateGroup = true
+        } label: {
+            Label {
+                Text("Edit Group")
+            } icon: {
+                Image(systemName: "square.and.pencil")
+            }
+        }
+        Button {
+            promptGroupDelete = true
+        } label: {
+            Label {
+                Text("Delete Group")
+            } icon: {
+                Image(systemName: "trash")
+            }
+        }
+        Button {
+            newArchive = true
+        } label: {
+            Label {
+                Text("New Archive")
+            } icon: {
+                Image(systemName: "plus")
+            }
+        }
     }
 }
 
@@ -309,6 +292,45 @@ struct ARArchiveItemButton: View {
     }
 }
 
+struct ARTopGroupView: View {
+    @Binding var searchTerm: String
+    @Binding var hovered: String?
+    @Binding var sortMode: String
+    
+    var body: some View {
+        HStack {
+            VITextField(text: $searchTerm, s: Image(systemName: "magnifyingglass")) {
+                Text("Search Group")
+            }
+            Spacer()
+            ZStack {
+                Rectangle()
+                    .foregroundColor(.init("Accent"))
+                    .cornerRadius(20)
+                    .opacity(hovered == "SortButton" ? 1 : 0.1)
+                Menu {
+                    Button("By Date") {
+                        sortMode = "By Date"
+                    }
+                    Button("Alphabetically") {
+                        sortMode = "Alphabetically"
+                    }
+                } label: {
+                    Text("Sort \(sortMode)")
+                        .foregroundColor(hovered == "SortButton" ? .white : .init("Accent"))
+                }.menuStyle(BorderlessButtonMenuStyle())
+                    .foregroundColor(hovered == "SortButton" ? .white : .init("Accent"))
+                    .fixedSize()
+                    .padding(.horizontal, 7.5)
+                        .padding(7.5)
+            }.fixedSize()
+                .onHover { nowHovered in
+                    withAnimation { hovered = nowHovered ? "SortButton" : nil }
+                }
+        }.padding([.top, .horizontal], 7.5)
+    }
+}
+
 func toggleSidebar() {
     NSApp.keyWindow?.firstResponder?.tryToPerform(#selector(NSSplitViewController.toggleSidebar(_:)), with: nil)
 }
@@ -319,8 +341,8 @@ struct ContentVi2ew_Previews: PreviewProvider {
     }
 }
 
-func obtainCoolMetadata(g group: String, a archive: String, f file: String) -> (title: String, author: String)? {
-    let asset = AVAsset(url: URL(fileURLWithPath: "/Users/\(NSUserName())/Archived/\(group)/\(archive)/\(file)"))
+func obtainCoolMetadata(g group: String, a archive: String, f file: String, s source: String) -> (title: String, author: String)? {
+    let asset = AVAsset(url: URL(fileURLWithPath: "\(source)/\(group)/\(archive)/\(file)"))
     let metadata = asset.commonMetadata
     var returnable = (title: "", author: "")
     metadata.forEach { data in

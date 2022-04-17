@@ -12,12 +12,13 @@ struct ARShimCreateGroup: View {
     @Binding var groups: ARGroups
     @Binding var creatingGroup: Bool
     @Binding var processedGroups: [ARCategory]
+    @Binding var archiveSource: String
     var onDone: () -> ()
     var body: some View {
         ARCreateGroupView(processedGroups: $processedGroups) {
             groups.append($0)
             do {
-                indexFile = try Folder(path: "~/Archived").createFileIfNeeded(at: "Index.json")
+                indexFile = try Folder(path: archiveSource).createFileIfNeeded(at: "Index.json")
                 try indexFile!.write(try groups.jsonData())
                 creatingGroup = false
                 onDone()

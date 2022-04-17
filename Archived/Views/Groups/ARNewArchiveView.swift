@@ -19,6 +19,7 @@ struct ARNewArchiveView: View {
     @State var datePopover = false
     @State var files: [File] = []
     @Binding var group: ARGroup
+    @Binding var archiveSource: String
     var body: some View {
         ScrollView {
             VStack {
@@ -135,7 +136,7 @@ struct ARNewArchiveView: View {
                         Image("CheckCircle")
                     } onClick: {
                         do {
-                            let archivedFolder = try Folder(path: "~/Archived")
+                            let archivedFolder = try Folder(path: archiveSource)
                             let groupFolder = try archivedFolder.createSubfolderIfNeeded(withName: group.title)
                             let archiveFolder = try groupFolder.createSubfolderIfNeeded(withName: title)
                             try files.forEach { file in

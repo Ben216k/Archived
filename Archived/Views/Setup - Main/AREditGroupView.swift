@@ -14,6 +14,7 @@ struct AREditGroupView: View {
     @State var hovered: String?
     @State var titleEmpty = false
     @State var categoryEmpty = false
+    @Binding var archiveSource: String
     let onBack: () -> ()
     let onDone: () -> ()
     var body: some View {
@@ -55,7 +56,7 @@ struct AREditGroupView: View {
                         (titleEmpty, categoryEmpty) = (false, false)
                         if group.title.isEmpty { titleEmpty = true; return }
                         if group.category.isEmpty { categoryEmpty = true; return }
-                        if group.title != __group.title, let groupFolder = try? Folder(path: "/Users/\(NSUserName())/Archived/\(__group.title)") {
+                        if group.title != __group.title, let groupFolder = try? Folder(path: "\(archiveSource)/\(__group.title)") {
                             try groupFolder.rename(to: "\(group.title)")
                         }
                         __group = group

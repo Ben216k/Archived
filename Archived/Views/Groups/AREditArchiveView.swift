@@ -18,6 +18,7 @@ struct AREditArchiveView: View {
     @State var datePopover = false
     @State var files: [File] = []
     @Binding var group: ARGroup
+    @Binding var archiveSource: String
     var indexOfArchive: Int
     var body: some View {
         ScrollView {
@@ -99,7 +100,7 @@ struct AREditArchiveView: View {
                         .onAppear {
                             archive.files.forEach { this in
                                 do {
-                                    files.append(try File(path: "~/Archived/\(group.title)/\(archive.title)/\(this)"))
+                                    files.append(try File(path: "\(archiveSource)/\(group.title)/\(archive.title)/\(this)"))
                                 } catch {
                                     // No one cares
                                 }
@@ -144,7 +145,7 @@ struct AREditArchiveView: View {
                         Image("CheckCircle")
                     } onClick: {
                         do {
-                            let archivedFolder = try Folder(path: "~/Archived")
+                            let archivedFolder = try Folder(path: archiveSource)
                             let groupFolder = try archivedFolder.subfolder(named: group.title)
                             let archiveFolder = try groupFolder.subfolder(named: ogArchive.title)
                             if ogArchive.title != archive.title {
@@ -152,7 +153,7 @@ struct AREditArchiveView: View {
                             }
                             var tempFiles = [] as [String]
                             try files.forEach { file in
-                                if !file.path.contains("/Users/\(NSUserName())/Archived/\(group.title)/\(ogArchive.title)") {
+                                if !file.path.contains("\(archiveSource)/\(group.title)/\(ogArchive.title)") {
                                     try file.copy(to: archiveFolder)
                                 }
                                 tempFiles.append(file.name)
