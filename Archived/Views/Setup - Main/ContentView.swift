@@ -21,8 +21,6 @@ struct ContentView: View {
             VStack(spacing: 0) {
                 List {
                     ForEach(processedGroups, id: \.title) { group in
-    //                    Text(group.title)
-    //                        .font(.system(size: 12, weight: .semibold, design: .default))
                         Section {
                             ForEach(group.groups, id: \.self) { groupID in
                                 if groups.count > groupID {
@@ -39,6 +37,7 @@ struct ContentView: View {
                                             indexFile = try Folder(path: archiveSource).createFileIfNeeded(at: "Index.json")
                                             groups.remove(at: groupID)
                                             try indexFile!.write(try groups.jsonData())
+                                            processGroups()
                                             activeGroup = ""
                                             processGroups()
                                         } catch {
@@ -64,7 +63,13 @@ struct ContentView: View {
                     }
                 }.listStyle(SidebarListStyle())
                 List {
-                    NavigationLink(destination: ARPreferences(archiveSource: $archiveSource, processGroups: processGroups)) {
+                    NavigationLink(destination: ARPreferences(archiveSource: $archiveSource, processGroups: processGroups), isActive: .init(get: {
+                        activeGroup == ""
+                    }, set: { newValue in
+                        if newValue {
+                            activeGroup = ""
+                        }
+                    })) {
                         Text("Preferences")
                     }
                 }.listStyle(SidebarListStyle())
@@ -89,9 +94,7 @@ struct ContentView: View {
                     
                 }
             }
-            Text("Welcome to Archived!")
-                .padding()
-                .navigationTitle("Archived")
+            ARPreferences(archiveSource: $archiveSource, processGroups: processGroups)
                 .sheet(isPresented: $needsSetup) {
                     ARSetupController(groups: $groups, needsSetup: $needsSetup, processedGroups: $processedGroups, onDone: { processGroups() })
                 }
@@ -119,6 +122,8 @@ struct ContentView: View {
                             needsSetup = true
                         }
                         processGroups()
+//                        NSApp.keyWindow?.firstResponder?.tryToPerform(#selector(NSSplitViewController.toggleSidebar(_:)), with: nil)
+                        NSApp.keyWindow?.toolbar?.insertItem(withItemIdentifier: .toggleSidebar, at: 1)
                     }
                 }
         }
@@ -150,6 +155,7 @@ struct ContentView: View {
                 }
                 self.processedGroups.append(cat)
             }
+            print("Group: \(activeGroup)")
         } catch {
             print("Failed to process")
         }
