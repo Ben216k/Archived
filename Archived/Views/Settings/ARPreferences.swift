@@ -18,34 +18,34 @@ struct ARPreferences : View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading) {
-                Text("Updates")
-                    .font(.title2.bold())
-                VIButton(id: "UPDATE-APP", h: $hovered) {
-                    Image(systemName: "arrow.clockwise")
-                    Text("Check for Updates")
-                } onClick: {
-                    
-                }.inPad()
-                Text("Incase the app is running an older version, there could be bugs or features that were fixed/added in a newer version. You wouldn't want to be missing on that.")
-                    .fixedSize(horizontal: false, vertical: true)
-                    .padding(.bottom, 15)
-                HStack {
-                    VIButton(id: "AUTO-UPDATE", h: $hovered) {
-                        Image(systemName: "arrow.2.squarepath")
-                        Text("Disable Auto-Updating")
-                    } onClick: {
-                        
-                    }.inPad()
-                    VIButton(id: "UPDATE-NOTES", h: $hovered) {
-                        Image(systemName: "arrow.up.doc")
-                        Text("Disable Showing Notes After Update")
-                    } onClick: {
-                        
-                    }.inPad()
-                }
-                Text("Everything above, but with only one click, so new features come automagically. Also, if you show the notes after updating, you can learn what's new that you can use and what annoyances have been fixed.")
-                    .fixedSize(horizontal: false, vertical: true)
-                    .padding(.bottom, 15)
+//                Text("Updates")
+//                    .font(.title2.bold())
+//                VIButton(id: "UPDATE-APP", h: $hovered) {
+//                    Image(systemName: "arrow.clockwise")
+//                    Text("Check for Updates")
+//                } onClick: {
+//                    
+//                }.inPad()
+//                Text("Incase the app is running an older version, there could be bugs or features that were fixed/added in a newer version. You wouldn't want to be missing on that.")
+//                    .fixedSize(horizontal: false, vertical: true)
+//                    .padding(.bottom, 15)
+//                HStack {
+//                    VIButton(id: "AUTO-UPDATE", h: $hovered) {
+//                        Image(systemName: "arrow.2.squarepath")
+//                        Text("Disable Auto-Updating")
+//                    } onClick: {
+//                        
+//                    }.inPad()
+//                    VIButton(id: "UPDATE-NOTES", h: $hovered) {
+//                        Image(systemName: "arrow.up.doc")
+//                        Text("Disable Showing Notes After Update")
+//                    } onClick: {
+//                        
+//                    }.inPad()
+//                }
+//                Text("Everything above, but with only one click, so new features come automagically. Also, if you show the notes after updating, you can learn what's new that you can use and what annoyances have been fixed.")
+//                    .fixedSize(horizontal: false, vertical: true)
+//                    .padding(.bottom, 15)
                 Group {
                     Text("Storage Location")
                         .font(.title2.bold())

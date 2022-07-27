@@ -14,6 +14,7 @@ struct ARSetupController: View {
     @Binding var processedGroups: [ARCategory]
     var onDone: () -> ()
     @State var page = 0
+    
     var body: some View {
         Group {
             switch page {

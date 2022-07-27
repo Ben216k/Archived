@@ -15,6 +15,7 @@ struct ContentView: View {
     @State var creatingGroup = false
     @State var activeGroup = ""
     @State var archiveSource = "/Users/\(NSUserName())/Archived"
+    
     var body: some View {
         NavigationView {
             VStack(spacing: 0) {
@@ -109,14 +110,13 @@ struct ContentView: View {
                             print("Found data!")
                             groups = try ARGroups(rawJSON)
                             print("Decoded data!")
-                        } catch _ as ShellOutError {
+                        } catch {
                             print("Failed to find/read Index.json.")
                             print("Creating Archived folder")
+                            _ = try? call("rm -f ~/Archived/Index.json")
                             _ = try? call("mkdir ~/Archived/")
                             print("Starting Setup!")
                             needsSetup = true
-                        } catch {
-                            print("Failed to decode Index.json.")
                         }
                         processGroups()
                     }
