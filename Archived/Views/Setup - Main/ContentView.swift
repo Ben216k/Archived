@@ -14,7 +14,7 @@ struct ContentView: View {
     @State var needsSetup = false
     @State var creatingGroup = false
     @State var activeGroup = ""
-    @State var archiveSource = "/Users/\(NSUserName())/Archived"
+    @State var archiveSource = "/Users/\(NSUserName())/Library/Containers/bensova.Archived/Data/Archived"
     
     var body: some View {
         NavigationView {

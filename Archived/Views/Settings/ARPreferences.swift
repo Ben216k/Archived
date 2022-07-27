@@ -24,7 +24,7 @@ struct ARPreferences : View {
 //                    Image(systemName: "arrow.clockwise")
 //                    Text("Check for Updates")
 //                } onClick: {
-//                    
+//
 //                }.inPad()
 //                Text("Incase the app is running an older version, there could be bugs or features that were fixed/added in a newer version. You wouldn't want to be missing on that.")
 //                    .fixedSize(horizontal: false, vertical: true)
@@ -34,13 +34,13 @@ struct ARPreferences : View {
 //                        Image(systemName: "arrow.2.squarepath")
 //                        Text("Disable Auto-Updating")
 //                    } onClick: {
-//                        
+//
 //                    }.inPad()
 //                    VIButton(id: "UPDATE-NOTES", h: $hovered) {
 //                        Image(systemName: "arrow.up.doc")
 //                        Text("Disable Showing Notes After Update")
 //                    } onClick: {
-//                        
+//
 //                    }.inPad()
 //                }
 //                Text("Everything above, but with only one click, so new features come automagically. Also, if you show the notes after updating, you can learn what's new that you can use and what annoyances have been fixed.")
@@ -98,7 +98,7 @@ struct ARPreferences : View {
                         Rectangle().foregroundColor(.init("Accent").opacity(0.1))
                             .cornerRadius(15)
                         HStack {
-                            Text("~/Archived")
+                            Text("~/Library/Containers/bensova.Archived/Data/Archived")
                                 .font(.system(size: 11.5).weight(.medium))
                             Text("DEFAULT")
                                 .font(.caption.weight(.light))
@@ -106,18 +106,18 @@ struct ARPreferences : View {
                                 .padding(.horizontal, 3)
                                 .background(Color(.init("Accent")).opacity(0.1))
                             Spacer()
-                            VIButton(id: "Select-Default", h: archiveSource == "/Users/\(NSUserName())/Archived" ? .constant("Select-Default") : $hovered) {
-                                Text(archiveSource == "/Users/\(NSUserName())/Archived" ? "Selected" : "Select")
+                            VIButton(id: "Select-Default", h: archiveSource == "/Users/\(NSUserName())/Library/Containers/bensova.Archived/Data/Archived" ? .constant("Select-Default") : $hovered) {
+                                Text(archiveSource == "/Users/\(NSUserName())/Library/Containers/bensova.Archived/Data/Archived" ? "Selected" : "Select")
                             } onClick: {
                                 do {
-                                    let indexFile = try Folder(path: "/Users/\(NSUserName())/Archived").createFileIfNeeded(at: "Index.json")
+                                    let indexFile = try Folder(path: "/Users/\(NSUserName())/Library/Containers/bensova.Archived/Data/Archived").createFileIfNeeded(at: "Index.json")
                                     do {
                                         let rawJSON = try indexFile.readAsString()
                                         _ = try ARGroups(rawJSON)
                                     } catch {
                                         try indexFile.write("[]")
                                     }
-                                    archiveSource = "/Users/\(NSUserName())/Archived"
+                                    archiveSource = "/Users/\(NSUserName())/Library/Containers/bensova.Archived/Data/Archived"
                                     UserDefaults.standard.set(archiveSource, forKey: "Source")
                                     processGroups()
                                 } catch {
@@ -186,7 +186,7 @@ struct ARPreferences : View {
                                         switch al.runModal() {
                                         case .alertFirstButtonReturn:
                                             if archiveSource == source.path {
-                                                archiveSource = "/Users/\(NSUserName())/Archived"
+                                                archiveSource = "/Users/\(NSUserName())/Library/Containers/bensova.Archived/Data/Archived"
                                                 UserDefaults.standard.set(archiveSource, forKey: "Source")
                                             }
                                             
@@ -199,7 +199,7 @@ struct ARPreferences : View {
                                             _ = try? call("rm -rf \"\(source.path)\"")
                                             
                                             if archiveSource == source.path {
-                                                archiveSource = "/Users/\(NSUserName())/Archived"
+                                                archiveSource = "/Users/\(NSUserName())/Library/Containers/bensova.Archived/Data/Archived"
                                                 UserDefaults.standard.set(archiveSource, forKey: "Source")
                                             }
                                             
