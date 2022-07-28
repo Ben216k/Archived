@@ -73,6 +73,9 @@ struct ARCreateGroupView: View {
                     onDone(.init(uuid: UUID().description, title: name, category: category, appArchives: []))
                 }.inPad()
             }
+            Button("") {
+                onBack()
+            }.buttonStyle(.borderless).keyboardShortcut(.cancelAction)
         }.textFieldStyle(RoundedBorderTextFieldStyle())
     }
 }

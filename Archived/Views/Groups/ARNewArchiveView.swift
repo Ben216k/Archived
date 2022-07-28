@@ -150,7 +150,9 @@ struct ARNewArchiveView: View {
                         
                     }.inPad()
                 }
-                
+                Button("") {
+                    newArchive = false
+                }.buttonStyle(.borderless).keyboardShortcut(.cancelAction)
                 
             }.padding(30)
         }.textFieldStyle(RoundedBorderTextFieldStyle())

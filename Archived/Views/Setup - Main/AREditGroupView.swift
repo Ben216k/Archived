@@ -66,6 +66,9 @@ struct AREditGroupView: View {
                     }
                 }.inPad()
             }
+            Button("") {
+                onBack()
+            }.buttonStyle(.borderless).keyboardShortcut(.cancelAction)
         }.textFieldStyle(RoundedBorderTextFieldStyle())
             .padding(30)
             .frame(width: 600, height: 400)
