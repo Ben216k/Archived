@@ -15,6 +15,8 @@ struct ContentView: View {
     @State var creatingGroup = false
     @State var activeGroup = ""
     @State var archiveSource = "/Users/\(NSUserName())/Library/Containers/bensova.Archived/Data/Archived"
+    @State var promptGroupDelete = false
+    @State var deletingGroupID = -1
     
     var body: some View {
         NavigationView {
@@ -55,6 +57,12 @@ struct ContentView: View {
                                     })) {
                                         Text(self.groups[groupID].title)
                                     }
+                                    .contextMenu {
+                                        Button("Delete") {
+                                            promptGroupDelete = true
+                                            deletingGroupID = groupID
+                                        }
+                                    }
                                 }
                             }
                         } header: {
@@ -92,6 +100,23 @@ struct ContentView: View {
                         })
                     }
                     
+                }.alert(isPresented: $promptGroupDelete) {
+                    Alert(title: Text("Delete Archive Group?"), message: Text("This archive group (including all archives and files in it) will be permanently deleted and will not be recoverable."), primaryButton: .destructive(Text("Delete"), action: {
+                        do {
+                            let archiveFolder = try? Folder(path: "\(archiveSource)/\(groups[deletingGroupID].title)/")
+                            _ = try? archiveFolder?.delete()
+                            indexFile = try Folder(path: archiveSource).createFileIfNeeded(at: "Index.json")
+                            groups.remove(at: deletingGroupID)
+                            try indexFile!.write(try groups.jsonData())
+                            processGroups()
+                            if activeGroup == "\(deletingGroupID)" {
+                                activeGroup = ""
+                            }
+                            processGroups()
+                        } catch {
+                            presentAlert(m: "Unable to Delete Archive Group", i: error.localizedDescription)
+                        }
+                    }), secondaryButton: .cancel())
                 }
             }
             ARPreferences(archiveSource: $archiveSource, processGroups: processGroups)
