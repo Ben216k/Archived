@@ -8,6 +8,7 @@
 import VeliaUI
 import SwiftUI
 import Files
+import CryptoKit
 
 struct ARPreferences : View {
     @State var hovered: String?
@@ -61,6 +62,11 @@ struct ARPreferences : View {
                             if panel.runModal() == .OK {
                                 if let url = panel.url {
                                     do {
+                                        let bookmarkData = try url.bookmarkData(options: NSURL.BookmarkCreationOptions.withSecurityScope)
+                                        
+                                        let bookmarkFile = try Folder(path: "/Users/\(NSUserName())/Library/Containers/bensova.Archived/Data/Archived").createFileIfNeeded(at: String(convertToSHA256(str: url.path).prefix(10)))
+                                        try bookmarkFile.write(bookmarkData)
+                                        
                                         let indexFile = try Folder(path: url.path).createFileIfNeeded(at: "Index.json")
                                         do {
                                             let rawJSON = try indexFile.readAsString()
@@ -157,6 +163,21 @@ struct ARPreferences : View {
                                         Text(archiveSource == source.path ? "Selected" : "Select")
                                     } onClick: {
                                         do {
+                                            let bookmarkFile = try Folder(path: "/Users/\(NSUserName())/Library/Containers/bensova.Archived/Data/Archived").file(named: String(convertToSHA256(str: source.path).prefix(10)))
+                                            
+                                            let bookmarkFileData = try bookmarkFile.read()
+//                                            let bookmarkFileString = String(decoding: bookmarkFileData, as: UTF8.self)
+//                                            print(bookmarkFileString)
+//                                            let decodedBookmark = Data(base64Encoded: bookmarkFileString, options: NSData.Base64DecodingOptions.ignoreUnknownCharacters)
+//
+//                                            guard let decodedBookmark = decodedBookmark else {
+//                                                presentAlert(m: "Failed to Load Location", i: "Failed to decode bookmark! (Just delete the location and add it back).")
+//                                                return
+//                                            }
+//
+                                            var bookmarkStale = false
+                                            let bookmarkURL = try URL(resolvingBookmarkData: bookmarkFileData, options: NSURL.BookmarkResolutionOptions.withSecurityScope, relativeTo: nil, bookmarkDataIsStale: &bookmarkStale)
+                                            _ = bookmarkURL.startAccessingSecurityScopedResource()
                                             let indexFile = try Folder(path: source.path).createFileIfNeeded(at: "Index.json")
                                             do {
                                                 let rawJSON = try indexFile.readAsString()
@@ -189,7 +210,9 @@ struct ARPreferences : View {
                                                 archiveSource = "/Users/\(NSUserName())/Library/Containers/bensova.Archived/Data/Archived"
                                                 UserDefaults.standard.set(archiveSource, forKey: "Source")
                                             }
-                                            
+                                            if let bookmarkFile = try? Folder(path: "/Users/\(NSUserName())/Library/Containers/bensova.Archived/Data/Archived").file(named: String(convertToSHA256(str: source.path).prefix(10))) {
+                                                _ = try? bookmarkFile.delete()
+                                            }
                                             archiveList.remove(at: archiveList.firstIndex(where: { $0 == source })!)
                                             UserDefaults.standard.set(archiveList.map(\.path), forKey: "List")
                                             processGroups()
@@ -234,4 +257,13 @@ struct ARPreferences : View {
         }
             .navigationTitle(Text("Preferences"))
     }
+}
+
+
+func convertToSHA256(str: String) -> String {
+    let inputData = Data(str.utf8)
+    let hashed = SHA256.hash(data: inputData)
+    let hashString = hashed.compactMap { String(format: "%02x", $0) }.joined()
+    print(hashString)
+    return hashString
 }

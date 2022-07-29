@@ -126,9 +126,21 @@ struct ContentView: View {
                 .onAppear {
                     if processedGroups.isEmpty {
                         print("Hello World")
-                        if let archivedSource = UserDefaults.standard.string(forKey: "Source"), (try? Folder(path: archiveSource).file(named: "Index.json").readAsString()) != nil {
-                            print("\(archivedSource)")
-                            self.archiveSource = archivedSource
+                        if let archivedSource2 = UserDefaults.standard.string(forKey: "Source"), archivedSource2 != "/Users/\(NSUserName())/Library/Containers/bensova.Archived/Data/Archived" {
+                            do {
+                                let bookmarkFile = try Folder(path: "/Users/\(NSUserName())/Library/Containers/bensova.Archived/Data/Archived").file(named: String(convertToSHA256(str: archivedSource2).prefix(10)))
+                                
+                                let bookmarkFileData = try bookmarkFile.read()
+                                var bookmarkStale = false
+                                let bookmarkURL = try URL(resolvingBookmarkData: bookmarkFileData, options: NSURL.BookmarkResolutionOptions.withSecurityScope, relativeTo: nil, bookmarkDataIsStale: &bookmarkStale)
+                                _ = bookmarkURL.startAccessingSecurityScopedResource()
+                            } catch {
+                                UserDefaults.standard.set(archiveSource, forKey: "Source")
+                            }
+                        }
+                        if let archivedSource2 = UserDefaults.standard.string(forKey: "Source"), (try? Folder(path: archiveSource).file(named: "Index.json").readAsString()) != nil {
+                            print("\(archivedSource2)")
+                            self.archiveSource = archivedSource2
                         } else {
                             UserDefaults.standard.set(archiveSource, forKey: "Source")
                         }

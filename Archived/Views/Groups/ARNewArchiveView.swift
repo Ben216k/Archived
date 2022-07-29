@@ -27,17 +27,16 @@ struct ARNewArchiveView: View {
                     .font(.title2.bold())
                     .padding(.bottom, 5)
                 VStack(alignment: .leading) {
-    //                HStack {
-    //                    Text("Group Title:")
-    //                    TextField("Group Title", text: $name)
-    //                }
-                    VITextField(text: $title, s: Image(systemName: "character.textbox")) {
-                        Text("Archive Title")
-                            .opacity(0.5)
+                    Group {
+                        VITextField(text: $title, s: Image(systemName: "character.textbox")) {
+                            Text("Archive Title")
+                                .opacity(0.5)
+                        }
+                        Text("Null/Void")
+                        Text("This is the version of the item you're archiving usually, or it could also be the variant of it, or really anything you want. For the v1.1.0 update of Patched Sur, I would put Patched Sur v1.1.0 here.")
+                            .font(.caption)
+                            .padding(.bottom, 5)
                     }
-                    Text("This is the version of the item you're archiving usually, or it could also be the variant of it, or really anything you want. For the v1.1.0 update of Patched Sur, I would put Patched Sur v1.1.0 here.")
-                        .font(.caption)
-                        .padding(.bottom, 5)
                     VITextField(text: $releaseType, s: Image(systemName: "tag")) {
                         Text("Archive Type")
                             .opacity(0.5)
