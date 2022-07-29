@@ -82,13 +82,15 @@ struct ARGroupView: View {
                                             .cornerRadius(15)
                                     }
                                     HStack {
-                                        VIButton(id: "REVEAL", h: $hovered) {
-                                            Image(systemName: "doc.text.magnifyingglass")
-                                                .font(.system(size: 15))
-                                            Text("Reveal in Finder")
-                                        } onClick: {
-                                            NSWorkspace.shared.selectFile(nil, inFileViewerRootedAtPath: "\(archiveSource)/\(group.title)/\(archive.title)")
-                                        }.inPad()
+                                        if !archive.files.isEmpty {
+                                            VIButton(id: "REVEAL", h: $hovered) {
+                                                Image(systemName: "doc.text.magnifyingglass")
+                                                    .font(.system(size: 15))
+                                                Text("Reveal in Finder")
+                                            } onClick: {
+                                                NSWorkspace.shared.selectFile(nil, inFileViewerRootedAtPath: "\(archiveSource)/\(group.title)/\(archive.title)")
+                                            }.inPad()
+                                        }
                                         VIButton(id: "EDITARCHIVE", h: $hovered) {
                                             Image(systemName: "square.and.pencil")
                                                 .font(.system(size: 15))
