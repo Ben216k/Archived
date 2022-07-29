@@ -77,7 +77,7 @@ Some things to know:
 An individual archive is a specific version of a specifc thing.
 An archive group is all the versions of that specific thing.
 
-So let's get started with your first archive, shell we?
+So let's get started with your first archive, shall we?
 """
 
 var indexFile = nil as File?
