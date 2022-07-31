@@ -16,6 +16,7 @@ struct ARGroupView: View {
     @State var expandedAt = -1
     @State var hovered: String?
     @State var promptDelete = false
+    @State var deleteAt = -1
     @State var filterSelection = ""
     @State var promptGroupDelete = false
     @State var promptUpdateGroup = false
@@ -41,91 +42,41 @@ struct ARGroupView: View {
                             VStack(alignment: .leading) {
                                 ARArchiveItemButton(expandedAt: $expandedAt, archiveIndice: archiveIndice, archive: archive, filterSelection: $filterSelection)
                                 if expandedAt == archiveIndice {
-                                    if !archive.notes.isEmpty {
-                                        VStack(alignment: .leading) {
-                                            HStack {
-                                                Text("Notes")
-                                                    .font(.body.bold())
-                                                    .padding(.bottom, -3)
-                                                Spacer()
-                                            }
-                                            ScrollView {
-                                                Text(archive.notes)
-                                            }
-                                            .frame(maxHeight: 200).fixedSize(horizontal: false, vertical: true)
-                                        }.padding(.horizontal, 7.5)
-                                            .padding(7.5).background(Color("Accent").opacity(0.1))
-                                            .cornerRadius(15)
-                                    }
-                                    ForEach(archive.files, id: \.self) { file in
-                                        HStack {
-                                            if let metadata = obtainCoolMetadata(g: group.title, a: archive.title, f: file, s: archiveSource) {
-                                                HStack(alignment: .bottom) {
-                                                    VStack(alignment: .leading) {
-                                                        Text(metadata.title)
-                                                            .bold()
-                                                        Text("\(metadata.author) - \(file)")
-                                                    }
-                                                }
-                                            } else {
-                                                Text(file)
-                                            }
-                                            Spacer()
-                                            Button {
-                                                NSWorkspace.shared.activateFileViewerSelecting([URL(fileURLWithPath: "\(archiveSource)/\(group.title)/\(archive.title)/\(file)")])
-                                            } label: {
-                                                Image(systemName: "doc.text.magnifyingglass")
-                                                    .font(.system(size: 15))
-                                            }.buttonStyle(.borderless)
-                                        }.padding(.horizontal, 7.5)
-                                            .padding(7.5).background(Color("Accent").opacity(0.1))
-                                            .cornerRadius(15)
-                                    }
-                                    HStack {
-                                        if !archive.files.isEmpty {
-                                            VIButton(id: "REVEAL", h: $hovered) {
-                                                Image(systemName: "doc.text.magnifyingglass")
-                                                    .font(.system(size: 15))
-                                                Text("Reveal in Finder")
-                                            } onClick: {
-                                                NSWorkspace.shared.selectFile(nil, inFileViewerRootedAtPath: "\(archiveSource)/\(group.title)/\(archive.title)")
-                                            }.inPad()
-                                        }
-                                        VIButton(id: "EDITARCHIVE", h: $hovered) {
-                                            Image(systemName: "square.and.pencil")
-                                                .font(.system(size: 15))
-                                            Text("Edit Archive")
-                                        } onClick: {
-                                            editingArchive = true
-                                        }.inPad()
-                                            .sheet(isPresented: $editingArchive) {
-                                                AREditArchiveView(newArchive: $editingArchive, archive: archive, ogArchive: archive, group: $group, archiveSource: $archiveSource, indexOfArchive: archiveIndice)
-                                            }
-                                        VIButton(id: "DELETE", h: $hovered) {
-                                            Image(systemName: "trash")
-                                                .font(.system(size: 15))
-                                            Text("Delete Archive")
-                                        } onClick: {
-                                            promptDelete = true
-                                        }.btColor(.red).inPad()
-                                        .alert(isPresented: $promptDelete) {
-                                            Alert(title: Text("Delete Archive?"), message: Text("This archive (and all archived files) will be permanently deleted and will not be recoverable. (This archive group will not be deleted.)"), primaryButton: .destructive(Text("Delete"), action: {
-                                                do {
-                                                    let archiveFolder = try Folder(path: "\(archiveSource)/\(group.title)/\(archive.title)")
-                                                    try archiveFolder.delete()
-                                                    group.appArchives.remove(at: archiveIndice)
-                                                    expandedAt = -1
-                                                } catch {
-                                                    presentAlert(m: "Unable to Remove Archive", i: error.localizedDescription)
-                                                }
-                                            }), secondaryButton: .cancel())
-                                        }
-                                    }
+                                    AnotherPiece(archive: archive, archiveIndice: archiveIndice, archiveSource: $archiveSource, hovered: $hovered, editingArchive: $editingArchive, group: $group, promptDelete: $promptDelete, deleteAt: $deleteAt)
                                 }
                             }.padding(.horizontal, 7.5)
                                 .padding(7.5)
                                 .padding(.bottom, expandedAt == archiveIndice ? 5 : 0)
                         }.fixedSize(horizontal: false, vertical: true)
+                            .contextMenu {
+                                Button("Edit") {
+                                    editingArchive = true
+                                    expandedAt = archiveIndice
+                                }
+                                if !archive.files.isEmpty {
+                                    Button("Reveal in Finder") {
+                                        NSWorkspace.shared.selectFile(nil, inFileViewerRootedAtPath: "\(archiveSource)/\(group.title)/\(archive.title)")
+                                    }
+                                }
+                                Button("Delete") {
+                                    deleteAt = archiveIndice
+                                    promptDelete = true
+                                }
+                            }.alert(isPresented: .init(get: { promptDelete && archiveIndice == deleteAt }, set: {
+                                promptDelete = $0
+                            })) {
+                                Alert(title: Text("Delete Archive?"), message: Text("This archive (and all archived files) will be permanently deleted and will not be recoverable. (This archive group will not be deleted.)"), primaryButton: .destructive(Text("Delete"), action: {
+                                    do {
+                                        if let archiveFolder = try? Folder(path: "\(archiveSource)/\(group.title)/\(archive.title)") {
+                                            try archiveFolder.delete()
+                                        }
+                                        group.appArchives.remove(at: archiveIndice)
+                                        expandedAt = -1
+                                    } catch {
+                                        presentAlert(m: "Unable to Remove Archive", i: error.localizedDescription)
+                                    }
+                                }), secondaryButton: .cancel())
+                            }
                     }
                 }
                 HStack {
@@ -191,6 +142,92 @@ struct ARGroupView: View {
             }
             return group.appArchives[first].date > group.appArchives[second].date
         })
+    }
+}
+
+struct AnotherPiece: View {
+    
+    var archive: ARAppArchive
+    var archiveIndice: Int
+    @Binding var archiveSource: String
+    @Binding var hovered: String?
+    @Binding var editingArchive: Bool
+    @Binding var group: ARGroup
+    @Binding var promptDelete: Bool
+    @Binding var deleteAt: Int
+    
+    var body: some View {
+        VStack(alignment: .leading) {
+            if !archive.notes.isEmpty {
+                VStack(alignment: .leading) {
+                    HStack {
+                        Text("Notes")
+                            .font(.body.bold())
+                            .padding(.bottom, -3)
+                        Spacer()
+                    }
+                    ScrollView {
+                        Text(archive.notes)
+                    }
+                    .frame(maxHeight: 200).fixedSize(horizontal: false, vertical: true)
+                }.padding(.horizontal, 7.5)
+                    .padding(7.5).background(Color("Accent").opacity(0.1))
+                    .cornerRadius(15)
+            }
+            ForEach(archive.files, id: \.self) { file in
+                HStack {
+                    if let metadata = obtainCoolMetadata(g: group.title, a: archive.title, f: file, s: archiveSource) {
+                        HStack(alignment: .bottom) {
+                            VStack(alignment: .leading) {
+                                Text(metadata.title)
+                                    .bold()
+                                Text("\(metadata.author) - \(file)")
+                            }
+                        }
+                    } else {
+                        Text(file)
+                    }
+                    Spacer()
+                    Button {
+                        NSWorkspace.shared.activateFileViewerSelecting([URL(fileURLWithPath: "\(archiveSource)/\(group.title)/\(archive.title)/\(file)")])
+                    } label: {
+                        Image(systemName: "doc.text.magnifyingglass")
+                            .font(.system(size: 15))
+                    }.buttonStyle(.borderless)
+                }.padding(.horizontal, 7.5)
+                    .padding(7.5).background(Color("Accent").opacity(0.1))
+                    .cornerRadius(15)
+            }
+            HStack {
+                if !archive.files.isEmpty {
+                    VIButton(id: "REVEAL", h: $hovered) {
+                        Image(systemName: "doc.text.magnifyingglass")
+                            .font(.system(size: 15))
+                        Text("Reveal in Finder")
+                    } onClick: {
+                        NSWorkspace.shared.selectFile(nil, inFileViewerRootedAtPath: "\(archiveSource)/\(group.title)/\(archive.title)")
+                    }.inPad()
+                }
+                VIButton(id: "EDITARCHIVE", h: $hovered) {
+                    Image(systemName: "square.and.pencil")
+                        .font(.system(size: 15))
+                    Text("Edit Archive")
+                } onClick: {
+                    editingArchive = true
+                }.inPad()
+                    .sheet(isPresented: $editingArchive) {
+                        AREditArchiveView(newArchive: $editingArchive, archive: archive, ogArchive: archive, group: $group, archiveSource: $archiveSource, indexOfArchive: archiveIndice)
+                    }
+                VIButton(id: "DELETE", h: $hovered) {
+                    Image(systemName: "trash")
+                        .font(.system(size: 15))
+                    Text("Delete Archive")
+                } onClick: {
+                    deleteAt = archiveIndice
+                    promptDelete = true
+                }.btColor(.red).inPad()
+            }
+        }
     }
 }
 
