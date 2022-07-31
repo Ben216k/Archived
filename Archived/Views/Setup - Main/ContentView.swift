@@ -16,7 +16,10 @@ struct ContentView: View {
     @State var activeGroup = ""
     @State var archiveSource = "/Users/\(NSUserName())/Library/Containers/bensova.Archived/Data/Archived"
     @State var promptGroupDelete = false
+    @State var promptGroupEdit = false
     @State var deletingGroupID = -1
+    @State var editingGroupID = -1
+    @State var otherGroupID = -1
     
     var body: some View {
         NavigationView {
@@ -58,6 +61,11 @@ struct ContentView: View {
                                         Text(self.groups[groupID].title)
                                     }
                                     .contextMenu {
+                                        Button("Edit") {
+                                            editingGroupID = groupID
+                                            otherGroupID = groupID
+                                            promptGroupEdit = true
+                                        }
                                         Button("Delete") {
                                             promptGroupDelete = true
                                             deletingGroupID = groupID
@@ -117,6 +125,31 @@ struct ContentView: View {
                             presentAlert(m: "Unable to Delete Archive Group", i: error.localizedDescription)
                         }
                     }), secondaryButton: .cancel())
+                }.sheet(isPresented: $promptGroupEdit) {
+                    if editingGroupID == -1 {
+                        Text("")
+                            .onAppear {
+                                print(editingGroupID, otherGroupID)
+                                editingGroupID = -1
+                                editingGroupID = otherGroupID
+                                print(editingGroupID, otherGroupID)
+                            }
+                    } else {
+                        AREditGroupView(__group: .init(get: { groups[editingGroupID] }, set: {
+                            groups[editingGroupID] = $0
+                            do {
+                                indexFile = try Folder(path: archiveSource).createFileIfNeeded(at: "Index.json")
+                                try indexFile!.write(try groups.jsonData())
+                            } catch {
+                                presentAlert(m: "Failed to Update Archive", i: "\(error.localizedDescription)")
+                            }
+                        }), group: groups[editingGroupID], archiveSource: $archiveSource, onBack: {
+                            promptGroupEdit = false
+                        }, onDone: {
+                            promptGroupEdit = false
+                            processGroups()
+                        })
+                    }
                 }
             }
             ARPreferences(archiveSource: $archiveSource, processGroups: processGroups)
