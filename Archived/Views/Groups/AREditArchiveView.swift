@@ -31,16 +31,23 @@ struct AREditArchiveView: View {
     //                    Text("Group Title:")
     //                    TextField("Group Title", text: $name)
     //                }
-                    VITextField(text: $archive.title, s: Image(systemName: "character.textbox")) {
-                        Text("Archive Title")
-                            .opacity(0.5)
-                    }
-                    Text("This is the version of the item you're archiving usually, or it could also be the variant of it, or really anything you want. For the v1.1.0 update of Patched Sur, I would put Patched Sur v1.1.0 here.")
-                        .font(.caption)
-                        .padding(.bottom, 5)
-                    VITextField(text: $archive.releaseType, s: Image(systemName: "tag")) {
-                        Text("Archive Type")
-                            .opacity(0.5)
+                    Group {
+                        VITextField(text: $archive.title, s: Image(systemName: "character.textbox")) {
+                            Text("Archive Title")
+                                .opacity(0.5)
+                        }
+                        if archive.title.isEmpty {
+                            Text("This archive needs a title!")
+                                .font(.caption)
+                                .foregroundColor(.red)
+                        }
+                        Text("This is the version of the item you're archiving usually, or it could also be the variant of it, or really anything you want. For the v1.1.0 update of Patched Sur, I would put Patched Sur v1.1.0 here.")
+                            .font(.caption)
+                            .padding(.bottom, 5)
+                        VITextField(text: $archive.releaseType, s: Image(systemName: "tag")) {
+                            Text("Archive Type")
+                                .opacity(0.5)
+                        }
                     }
                     
                     Text("This can be whatever you want. For software, I'd put this as something like RELEASE, BETA or ALPHA since there can be different types of releases of an app. You can put whatever you want. This looks better with all caps.")
@@ -144,6 +151,9 @@ struct AREditArchiveView: View {
                         Text("Update")
                         Image("CheckCircle")
                     } onClick: {
+                        if archive.title.isEmpty {
+                            return
+                        }
                         do {
                             let archivedFolder = try Folder(path: archiveSource)
                             let groupFolder = try archivedFolder.subfolder(named: group.title)

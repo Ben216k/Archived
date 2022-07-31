@@ -19,6 +19,7 @@ struct ARNewArchiveView: View {
     @State var datePopover = false
     @State var files: [File] = []
     @Binding var group: ARGroup
+    @State var hasChecked = false
     @Binding var archiveSource: String
     var body: some View {
         ScrollView {
@@ -32,7 +33,11 @@ struct ARNewArchiveView: View {
                             Text("Archive Title")
                                 .opacity(0.5)
                         }
-                        Text("Null/Void")
+                        if title.isEmpty && hasChecked {
+                            Text("This archive needs a title!")
+                                .font(.caption)
+                                .foregroundColor(.red)
+                        }
                         Text("This is the version of the item you're archiving usually, or it could also be the variant of it, or really anything you want. For the v1.1.0 update of Patched Sur, I would put Patched Sur v1.1.0 here.")
                             .font(.caption)
                             .padding(.bottom, 5)
@@ -134,6 +139,10 @@ struct ARNewArchiveView: View {
                         Text("Create")
                         Image("CheckCircle")
                     } onClick: {
+                        guard !title.isEmpty else {
+                            hasChecked = true
+                            return
+                        }
                         do {
                             let archivedFolder = try Folder(path: archiveSource)
                             let groupFolder = try archivedFolder.createSubfolderIfNeeded(withName: group.title)

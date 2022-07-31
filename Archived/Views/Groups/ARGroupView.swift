@@ -255,28 +255,30 @@ struct ARArchiveItemButton: View {
             
             VStack {
                 HStack {
-                    Button {
-                        if !filterSelection.hasPrefix("TYPE-") {
-                            filterSelection = "TYPE-\(archive.releaseType)"
-                        } else {
-                            filterSelection = ""
-                        }
-                    } label: {
-                        if !filterSelection.hasPrefix("TYPE-") {
-                            Text("\(archive.releaseType)")
-                                .font(.caption.weight(.light))
-                                .padding(2)
-                                .padding(.horizontal, 3)
-                                .background(Color(.init("Accent")).opacity(0.1))
-                        } else {
-                            Text("\(archive.releaseType)")
-                                .font(.caption.weight(.light))
-                                .foregroundColor(.white)
-                                .padding(2)
-                                .padding(.horizontal, 3)
-                                .background(Color(.init("Accent")))
-                        }
-                    }.buttonStyle(.borderless)
+                    if !archive.releaseType.isEmpty {
+                        Button {
+                            if !filterSelection.hasPrefix("TYPE-") {
+                                filterSelection = "TYPE-\(archive.releaseType)"
+                            } else {
+                                filterSelection = ""
+                            }
+                        } label: {
+                            if !filterSelection.hasPrefix("TYPE-") {
+                                Text("\(archive.releaseType)")
+                                    .font(.caption.weight(.light))
+                                    .padding(2)
+                                    .padding(.horizontal, 3)
+                                    .background(Color(.init("Accent")).opacity(0.1))
+                            } else {
+                                Text("\(archive.releaseType)")
+                                    .font(.caption.weight(.light))
+                                    .foregroundColor(.white)
+                                    .padding(2)
+                                    .padding(.horizontal, 3)
+                                    .background(Color(.init("Accent")))
+                            }
+                        }.buttonStyle(.borderless)
+                    }
                     Button {
                         expandedAt = expandedAt == archiveIndice ? -1 : archiveIndice
                     } label: {
