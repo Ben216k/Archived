@@ -64,7 +64,7 @@ struct ARPreferences : View {
                                     do {
                                         let bookmarkData = try url.bookmarkData(options: NSURL.BookmarkCreationOptions.withSecurityScope)
                                         
-                                        let bookmarkFile = try Folder(path: "/Users/\(NSUserName())/Library/Containers/bensova.Archived/Data/Archived").createFileIfNeeded(at: String(convertToSHA256(str: url.path).prefix(10)))
+                                        let bookmarkFile = try Folder(path: "/Users/\(NSUserName())/Library/Containers/me.ben216k.Archived/Data/Archived").createFileIfNeeded(at: String(convertToSHA256(str: url.path).prefix(10)))
                                         try bookmarkFile.write(bookmarkData)
                                         
                                         let indexFile = try Folder(path: url.path).createFileIfNeeded(at: "Index.json")
@@ -104,7 +104,7 @@ struct ARPreferences : View {
                         Rectangle().foregroundColor(.init("Accent").opacity(0.1))
                             .cornerRadius(15)
                         HStack {
-                            Text("~/Library/Containers/bensova.Archived/Data/Archived")
+                            Text("~/Library/Containers/me.ben216k.Archived/Data/Archived")
                                 .font(.system(size: 11.5).weight(.medium))
                             Text("DEFAULT")
                                 .font(.caption.weight(.light))
@@ -112,18 +112,18 @@ struct ARPreferences : View {
                                 .padding(.horizontal, 3)
                                 .background(Color(.init("Accent")).opacity(0.1))
                             Spacer()
-                            VIButton(id: "Select-Default", h: archiveSource == "/Users/\(NSUserName())/Library/Containers/bensova.Archived/Data/Archived" ? .constant("Select-Default") : $hovered) {
-                                Text(archiveSource == "/Users/\(NSUserName())/Library/Containers/bensova.Archived/Data/Archived" ? "Selected" : "Select")
+                            VIButton(id: "Select-Default", h: archiveSource == "/Users/\(NSUserName())/Library/Containers/me.ben216k.Archived/Data/Archived" ? .constant("Select-Default") : $hovered) {
+                                Text(archiveSource == "/Users/\(NSUserName())/Library/Containers/me.ben216k.Archived/Data/Archived" ? "Selected" : "Select")
                             } onClick: {
                                 do {
-                                    let indexFile = try Folder(path: "/Users/\(NSUserName())/Library/Containers/bensova.Archived/Data/Archived").createFileIfNeeded(at: "Index.json")
+                                    let indexFile = try Folder(path: "/Users/\(NSUserName())/Library/Containers/me.ben216k.Archived/Data/Archived").createFileIfNeeded(at: "Index.json")
                                     do {
                                         let rawJSON = try indexFile.readAsString()
                                         _ = try ARGroups(rawJSON)
                                     } catch {
                                         try indexFile.write("[]")
                                     }
-                                    archiveSource = "/Users/\(NSUserName())/Library/Containers/bensova.Archived/Data/Archived"
+                                    archiveSource = "/Users/\(NSUserName())/Library/Containers/me.ben216k.Archived/Data/Archived"
                                     UserDefaults.standard.set(archiveSource, forKey: "Source")
                                     processGroups()
                                 } catch {
@@ -163,7 +163,7 @@ struct ARPreferences : View {
                                         Text(archiveSource == source.path ? "Selected" : "Select")
                                     } onClick: {
                                         do {
-                                            let bookmarkFile = try Folder(path: "/Users/\(NSUserName())/Library/Containers/bensova.Archived/Data/Archived").file(named: String(convertToSHA256(str: source.path).prefix(10)))
+                                            let bookmarkFile = try Folder(path: "/Users/\(NSUserName())/Library/Containers/me.ben216k.Archived/Data/Archived").file(named: String(convertToSHA256(str: source.path).prefix(10)))
                                             
                                             let bookmarkFileData = try bookmarkFile.read()
 //                                            let bookmarkFileString = String(decoding: bookmarkFileData, as: UTF8.self)
@@ -207,10 +207,10 @@ struct ARPreferences : View {
                                         switch al.runModal() {
                                         case .alertFirstButtonReturn:
                                             if archiveSource == source.path {
-                                                archiveSource = "/Users/\(NSUserName())/Library/Containers/bensova.Archived/Data/Archived"
+                                                archiveSource = "/Users/\(NSUserName())/Library/Containers/me.ben216k.Archived/Data/Archived"
                                                 UserDefaults.standard.set(archiveSource, forKey: "Source")
                                             }
-                                            if let bookmarkFile = try? Folder(path: "/Users/\(NSUserName())/Library/Containers/bensova.Archived/Data/Archived").file(named: String(convertToSHA256(str: source.path).prefix(10))) {
+                                            if let bookmarkFile = try? Folder(path: "/Users/\(NSUserName())/Library/Containers/me.ben216k.Archived/Data/Archived").file(named: String(convertToSHA256(str: source.path).prefix(10))) {
                                                 _ = try? bookmarkFile.delete()
                                             }
                                             archiveList.remove(at: archiveList.firstIndex(where: { $0 == source })!)
@@ -222,7 +222,7 @@ struct ARPreferences : View {
                                             _ = try? call("rm -rf \"\(source.path)\"")
                                             
                                             if archiveSource == source.path {
-                                                archiveSource = "/Users/\(NSUserName())/Library/Containers/bensova.Archived/Data/Archived"
+                                                archiveSource = "/Users/\(NSUserName())/Library/Containers/me.ben216k.Archived/Data/Archived"
                                                 UserDefaults.standard.set(archiveSource, forKey: "Source")
                                             }
                                             

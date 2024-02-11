@@ -33,7 +33,7 @@ struct ARGroupView: View {
             VStack(alignment: .leading, spacing: 10) {
                 ForEach(excessiveFiltering(group.appArchives), id: \.self) { archiveIndice in
                     
-                    if let archive = group.appArchives[archiveIndice] {
+                    if let archive = Optional.some(group.appArchives[archiveIndice]) {
                         ZStack(alignment: .leading) {
                             Rectangle()
                                 .foregroundColor(.init("Accent"))

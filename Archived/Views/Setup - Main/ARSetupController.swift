@@ -27,7 +27,13 @@ struct ARSetupController: View {
                     do {
                         indexFile = try Folder(path: "~/Archived").createFileIfNeeded(at: "Index.json")
                         try indexFile!.write(try groups.jsonData())
-                        needsSetup = false
+                        print("Did this run?")
+                        DispatchQueue.main.async {
+                            needsSetup = false
+                        }
+                        print("I hope")
+                        print(needsSetup)
+                        
                         onDone()
                     } catch {
                         presentAlert(m: "Failed to Create Archive Group", i: "\(error.localizedDescription)")

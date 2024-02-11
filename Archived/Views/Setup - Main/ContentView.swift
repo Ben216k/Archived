@@ -12,9 +12,10 @@ struct ContentView: View {
     @State var groups = [] as ARGroups
     @State var processedGroups = [] as [ARCategory]
     @State var needsSetup = false
+    @State var canSetNeedsSetup = false
     @State var creatingGroup = false
     @State var activeGroup = ""
-    @State var archiveSource = "/Users/\(NSUserName())/Library/Containers/bensova.Archived/Data/Archived"
+    @State var archiveSource = "/Users/\(NSUserName())/Library/Containers/me.ben216k.Archived/Data/Archived"
     @State var promptGroupDelete = false
     @State var promptGroupEdit = false
     @State var deletingGroupID = -1
@@ -153,15 +154,17 @@ struct ContentView: View {
                 }
             }
             ARPreferences(archiveSource: $archiveSource, processGroups: processGroups)
-                .sheet(isPresented: $needsSetup) {
-                    ARSetupController(groups: $groups, needsSetup: $needsSetup, processedGroups: $processedGroups, onDone: { processGroups() })
-                }
+//                .sheet(isPresented: $needsSetup) {
+//                    ARSetupController(groups: $groups, needsSetup: $needsSetup, processedGroups: $processedGroups, onDone: { processGroups(); 
+//                        DispatchQueue.main.async { needsSetup = false }; print(needsSetup)
+//                        })
+//                }
                 .onAppear {
                     if processedGroups.isEmpty {
                         print("Hello World")
-                        if let archivedSource2 = UserDefaults.standard.string(forKey: "Source"), archivedSource2 != "/Users/\(NSUserName())/Library/Containers/bensova.Archived/Data/Archived" {
+                        if let archivedSource2 = UserDefaults.standard.string(forKey: "Source"), archivedSource2 != "/Users/\(NSUserName())/Library/Containers/me.ben216k.Archived/Data/Archived" {
                             do {
-                                let bookmarkFile = try Folder(path: "/Users/\(NSUserName())/Library/Containers/bensova.Archived/Data/Archived").file(named: String(convertToSHA256(str: archivedSource2).prefix(10)))
+                                let bookmarkFile = try Folder(path: "/Users/\(NSUserName())/Library/Containers/me.ben216k.Archived/Data/Archived").file(named: String(convertToSHA256(str: archivedSource2).prefix(10)))
                                 
                                 let bookmarkFileData = try bookmarkFile.read()
                                 var bookmarkStale = false
@@ -189,7 +192,10 @@ struct ContentView: View {
                             _ = try? call("rm -f ~/Archived/Index.json")
                             _ = try? call("mkdir ~/Archived/")
                             print("Starting Setup!")
-                            needsSetup = true
+                            if canSetNeedsSetup {
+                                needsSetup = true
+                                canSetNeedsSetup = false
+                            }
                         }
                         processGroups()
 //                        NSApp.keyWindow?.firstResponder?.tryToPerform(#selector(NSSplitViewController.toggleSidebar(_:)), with: nil)
@@ -226,6 +232,7 @@ struct ContentView: View {
                 self.processedGroups.append(cat)
             }
             print("Group: \(activeGroup)")
+            print(needsSetup)
         } catch {
             print("Failed to process")
         }
