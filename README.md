@@ -12,7 +12,7 @@ To install Archived, download the latest `.app` file from the GitHub releases pa
 3. Unzip the file and move `Archived.app` to your Applications folder.
 
 ### FAQ
-Q: Why is it in beta?
+Q: Why is it in beta?<br/>
 A: Because it's I'm not sure what features I need to add from when I originally started it (or bugs that stand). This is an old project that has been revived.
 
 Okay, I ran out of ideas. Give me questions.
