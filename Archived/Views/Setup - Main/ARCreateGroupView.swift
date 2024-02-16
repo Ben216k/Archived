@@ -32,7 +32,7 @@ struct ARCreateGroupView: View {
                     Text("Group Title")
                         .opacity(0.5)
                 }
-                (Text(titleEmpty ? "Please enter a group title.\n" : "").foregroundColor(.red) + Text("This should be the name of the item you're going to archive several versions of. For example, if I was archiving all the versions of macOS Big Sur, I would just type in macOS Big Sur here."))
+                (Text(titleEmpty ? "Please enter a group title.\n" : "").foregroundColor(.red) + Text("This should be the name of the item you're going to archive several versions of. For example, if I was archiving all the versions of macOS Sonoma, I would just type in macOS Sonoma here."))
                     .font(.caption)
                     .padding(.bottom, 5)
                 VITextField(text: $category, s: Image(systemName: "rectangle.3.offgrid")) {
