@@ -19,37 +19,13 @@ struct ARPreferences : View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading) {
-//                Text("Updates")
-//                    .font(.title2.bold())
-//                VIButton(id: "UPDATE-APP", h: $hovered) {
-//                    Image(systemName: "arrow.clockwise")
-//                    Text("Check for Updates")
-//                } onClick: {
-//
-//                }.inPad()
-//                Text("Incase the app is running an older version, there could be bugs or features that were fixed/added in a newer version. You wouldn't want to be missing on that.")
-//                    .fixedSize(horizontal: false, vertical: true)
-//                    .padding(.bottom, 15)
-//                HStack {
-//                    VIButton(id: "AUTO-UPDATE", h: $hovered) {
-//                        Image(systemName: "arrow.2.squarepath")
-//                        Text("Disable Auto-Updating")
-//                    } onClick: {
-//
-//                    }.inPad()
-//                    VIButton(id: "UPDATE-NOTES", h: $hovered) {
-//                        Image(systemName: "arrow.up.doc")
-//                        Text("Disable Showing Notes After Update")
-//                    } onClick: {
-//
-//                    }.inPad()
-//                }
-//                Text("Everything above, but with only one click, so new features come automagically. Also, if you show the notes after updating, you can learn what's new that you can use and what annoyances have been fixed.")
-//                    .fixedSize(horizontal: false, vertical: true)
-//                    .padding(.bottom, 15)
                 Group {
+                    
+                    // MARK: - Storage Location
+                    
                     Text("Storage Location")
                         .font(.title2.bold())
+                
                     HStack {
                         VIButton(id: "ADD-LOCATION", h: $hovered) {
                             Image(systemName: "plus")
@@ -133,6 +109,7 @@ struct ARPreferences : View {
                         }
                             .padding(5)
                             .padding(.horizontal, 7.5)
+                            .padding(.trailing, -6.5)
                     }.fixedSize(horizontal: false, vertical: true)
                         .onAppear {
                             (UserDefaults.standard.stringArray(forKey: "List") ?? []).forEach { source in
@@ -249,6 +226,52 @@ struct ARPreferences : View {
                     Text("Choosing where your archive is stored allows you to store files on an external drive, whether it be the cloud or a physical drive you can plug into another device.")
                         .fixedSize(horizontal: false, vertical: true)
                         .padding(.bottom, 15)
+                    Text("Updates")
+                        .font(.title2.bold())
+                    ZStack {
+                        Rectangle().foregroundColor(.init("Accent").opacity(0.1))
+                            .cornerRadius(15)
+                        HStack {
+                            Text("Current Version: ") + Text(getCurrentVersionAndBuild()).bold()
+                            Spacer()
+                            VIButton(id: "githubUpdates", h: $hovered) {
+                                Image("GitHubMark")
+                                Text("Check GitHub")
+                            } onClick: {
+                                NSWorkspace.shared.open(URL(string: "https://github.com/Ben216k/Archived/releases/latest")!)
+                            }.inPad().padding(.horizontal, -6.5)
+                        } .padding(5)
+                            .padding(.horizontal, 7.5)
+                    }.fixedSize(horizontal: false, vertical: true)
+                        .padding(.top, -5)
+                        .padding(.bottom, 2)
+                    Text("This feature is not currently available for this release. Please wait until a future update for this functionality. For the time being, if there is a new update, delete this app from the Applications folder and install a new version. Data will be saved from older versions.")
+                        .fixedSize(horizontal: false, vertical: true)
+                        .padding(.bottom, 15)
+                    
+                    // MARK: Support and Community
+                    
+                    Text("Support and Community")
+                        .font(.title2.bold())
+                    HStack(spacing: 15) {
+                        VIButton(id: "githubMain", h: $hovered) {
+                            Image("GitHubMark")
+                            Text("GitHub")
+                        } onClick: {
+                            NSWorkspace.shared.open(URL(string: "https://github.com/Ben216k/Archived/")!)
+                        }.inPad()
+                        VIButton(id: "discordMain", h: $hovered) {
+                            Image("DiscordMark")
+                            Text("Discord")
+                        } onClick: {
+                            NSWorkspace.shared.open(URL(string: "https://discord.gg/2DxVn4HDX6")!)
+                        }.inPad().padding(.horizontal, -6.5)
+                        Spacer()
+                    }.padding(.top, -5)
+                        .padding(.bottom, 2)
+                    Text("Finding bugs? Have questions? Came up with some suggestions? You can join the community on Discord for discussions. If you run into any issues, GitHub has an issues tab for all bugs that rise. Archived is in beta, so feedback is greatly appreciated.")
+                        .fixedSize(horizontal: false, vertical: true)
+                        .padding(.bottom, 15)
                 }
                 Rectangle()
                     .frame(height: 0)
@@ -266,4 +289,13 @@ func convertToSHA256(str: String) -> String {
     let hashString = hashed.compactMap { String(format: "%02x", $0) }.joined()
     print(hashString)
     return hashString
+}
+
+func getCurrentVersionAndBuild() -> String {
+    if let version = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String,
+       let build = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String {
+        return "\(version) (\(build))"
+    } else {
+        return "Version information not available"
+    }
 }
