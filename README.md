@@ -7,7 +7,7 @@ Archived is a simple Mac app for making file archives with some decent features,
 ## Installation
 To install Archived, download the latest `.app` file from the GitHub releases page. Unzip the file, and drag the application to your Applications folder.
 
-1. Navigate to the [Releases section](https://github.com/yourusername/archived/releases) of the project repository.
+1. Navigate to the [Releases section](https://github.com/Ben216k/Archived/releases) of the project repository.
 2. Download the latest release (`Archived.zip`).
 3. Unzip the file and move `Archived.app` to your Applications folder.
 
